@@ -20,8 +20,6 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Total Dials"
         value={kpis.totalDials.current}
-        previousValue={kpis.totalDials.previous}
-        percentChange={kpis.totalDials.percentChange}
         icon={<Phone className="w-5 h-5" />}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300'}
       />
@@ -29,8 +27,6 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Total Connected"
         value={kpis.totalConnected.current}
-        previousValue={kpis.totalConnected.previous}
-        percentChange={kpis.totalConnected.percentChange}
         icon={<PhoneCall className="w-5 h-5" />}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-75'}
       />
@@ -38,8 +34,6 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Total Talk Time"
         value={kpis.totalTalkTime.current}
-        previousValue={kpis.totalTalkTime.previous}
-        percentChange={kpis.totalTalkTime.percentChange}
         icon={<Clock className="w-5 h-5" />}
         formatter={formatMinutes}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-150'}
@@ -48,8 +42,6 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Scheduled Meetings"
         value={kpis.scheduledMeetings.current}
-        previousValue={kpis.scheduledMeetings.previous}
-        percentChange={kpis.scheduledMeetings.percentChange}
         icon={<Calendar className="w-5 h-5" />}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-225'}
       />
@@ -57,8 +49,6 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Successful Meetings"
         value={kpis.successfulMeetings.current}
-        previousValue={kpis.successfulMeetings.previous}
-        percentChange={kpis.successfulMeetings.percentChange}
         icon={<CalendarCheck className="w-5 h-5" />}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-300'}
       />

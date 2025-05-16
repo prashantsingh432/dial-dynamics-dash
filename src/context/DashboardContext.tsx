@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -55,12 +56,29 @@ export interface FunnelData {
   color: string;
 }
 
+export interface AgentDailyStat {
+  date: string;
+  dials: number;
+  connects: number;
+  meetings: number;
+}
+
+export interface AgentPerformanceData {
+  totalDials: number;
+  totalConnected: number;
+  talkTime: number;
+  scheduledMeetings: number;
+  successfulMeetings: number;
+  dailyStats: AgentDailyStat[];
+}
+
 export interface DashboardData {
   kpis: KPIData;
   topPerformers: TopPerformer[];
   performanceChart: ChartData;
   projectPerformance: ProjectPerformance[];
   conversionFunnel: FunnelData[];
+  agentPerformance?: AgentPerformanceData;
 }
 
 export interface DashboardFilters {
@@ -74,10 +92,12 @@ export interface DashboardContextType {
   data: DashboardData;
   filters: DashboardFilters;
   loading: boolean;
+  dataAvailable: boolean;
   setTimeFrame: (timeFrame: TimeFrame) => void;
   setSecondaryTimeFrame: (secondaryTimeFrame: SecondaryTimeFrame) => void;
   setProject: (project: Project) => void;
   setAgent: (agent: Agent) => void;
+  resetMonth: () => void;
   isAnimating: boolean;
   agentsList: { id: string; name: string; project: string }[];
   sidebarCollapsed: boolean;
@@ -108,6 +128,7 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
   });
   
   const [loading, setLoading] = useState(true);
+  const [dataAvailable, setDataAvailable] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [agentsList, setAgentsList] = useState<{ id: string; name: string; project: string }[]>([]);
@@ -140,6 +161,23 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
     
     fetchAgents();
   }, []);
+  
+  // Check if data is available for the selected month
+  const checkDataAvailability = async (month: string) => {
+    try {
+      const { count, error } = await supabase
+        .from('daily_performance')
+        .select('*', { count: 'exact', head: true })
+        .eq('month', month);
+      
+      if (error) throw error;
+      
+      return count && count > 0;
+    } catch (error) {
+      console.error('Error checking data availability:', error);
+      return false;
+    }
+  };
   
   // Fetch KPIs from Supabase
   const fetchKPIs = async () => {
@@ -183,6 +221,71 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
       };
     } catch (error) {
       console.error('Error in fetchKPIs:', error);
+      return null;
+    }
+  };
+  
+  // Fetch agent performance data
+  const fetchAgentPerformance = async (agentId: string) => {
+    try {
+      // Get agent's daily performance data
+      const { data: agentDailyData, error: dailyError } = await supabase
+        .from('daily_performance')
+        .select(`
+          date,
+          total_dials,
+          total_connects,
+          total_talktime,
+          meetings_scheduled,
+          meetings_successful
+        `)
+        .eq('agent_id', agentId)
+        .eq('month', filters.secondaryTimeFrame)
+        .order('date');
+      
+      if (dailyError) throw dailyError;
+      
+      if (!agentDailyData || agentDailyData.length === 0) {
+        return null;
+      }
+      
+      // Calculate aggregated metrics
+      const totalDials = agentDailyData.reduce((sum, day) => sum + (day.total_dials || 0), 0);
+      const totalConnected = agentDailyData.reduce((sum, day) => sum + (day.total_connects || 0), 0);
+      const totalTalkTimeSeconds = agentDailyData.reduce((sum, day) => {
+        if (!day.total_talktime) return sum;
+        const parts = day.total_talktime.split(':');
+        if (parts.length !== 3) return sum;
+        
+        const hours = parseInt(parts[0]) || 0;
+        const minutes = parseInt(parts[1]) || 0;
+        const seconds = parseInt(parts[2]) || 0;
+        
+        return sum + (hours * 3600 + minutes * 60 + seconds);
+      }, 0);
+      
+      const talkTimeMinutes = Math.round(totalTalkTimeSeconds / 60);
+      const scheduledMeetings = agentDailyData.reduce((sum, day) => sum + (day.meetings_scheduled || 0), 0);
+      const successfulMeetings = agentDailyData.reduce((sum, day) => sum + (day.meetings_successful || 0), 0);
+      
+      // Format daily stats for chart
+      const dailyStats = agentDailyData.map(day => ({
+        date: new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        dials: day.total_dials || 0,
+        connects: day.total_connects || 0,
+        meetings: (day.meetings_scheduled || 0) + (day.meetings_successful || 0),
+      }));
+      
+      return {
+        totalDials,
+        totalConnected,
+        talkTime: talkTimeMinutes,
+        scheduledMeetings,
+        successfulMeetings,
+        dailyStats,
+      };
+    } catch (error) {
+      console.error('Error in fetchAgentPerformance:', error);
       return null;
     }
   };
@@ -296,6 +399,23 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
       setIsAnimating(true);
       
       try {
+        // Check if data exists for the selected month
+        const isDataAvailable = await checkDataAvailability(filters.secondaryTimeFrame);
+        setDataAvailable(isDataAvailable);
+        
+        if (!isDataAvailable) {
+          setLoading(false);
+          setIsAnimating(false);
+          return;
+        }
+        
+        let agentPerformanceData = undefined;
+        
+        // Fetch agent performance if an agent is selected
+        if (filters.agent) {
+          agentPerformanceData = await fetchAgentPerformance(filters.agent);
+        }
+        
         const [kpis, performanceChart, projectPerformance, conversionFunnel, topPerformers] = await Promise.all([
           fetchKPIs(),
           fetchPerformanceChart(),
@@ -310,6 +430,7 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
           projectPerformance: projectPerformance || data.projectPerformance,
           conversionFunnel: conversionFunnel || data.conversionFunnel,
           topPerformers: topPerformers || data.topPerformers,
+          agentPerformance: agentPerformanceData,
         });
       } catch (error) {
         console.error('Error updating dashboard data:', error);
@@ -341,6 +462,11 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
     setFilters(prev => ({ ...prev, agent }));
   };
   
+  // Reset to default month (May)
+  const resetMonth = () => {
+    setFilters(prev => ({ ...prev, secondaryTimeFrame: 'May' }));
+  };
+  
   // Toggle sidebar
   const toggleSidebar = () => {
     setSidebarCollapsed(prev => !prev);
@@ -352,10 +478,12 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
         data,
         filters,
         loading,
+        dataAvailable,
         setTimeFrame,
         setSecondaryTimeFrame,
         setProject,
         setAgent,
+        resetMonth,
         isAnimating,
         agentsList,
         sidebarCollapsed,
