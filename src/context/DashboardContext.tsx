@@ -254,7 +254,10 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
       const totalConnected = agentDailyData.reduce((sum, day) => sum + (day.total_connects || 0), 0);
       const totalTalkTimeSeconds = agentDailyData.reduce((sum, day) => {
         if (!day.total_talktime) return sum;
-        const parts = day.total_talktime.split(':');
+        
+        // Fix the type issue by ensuring total_talktime is a string before using split
+        const talkTimeString = String(day.total_talktime);
+        const parts = talkTimeString.split(':');
         if (parts.length !== 3) return sum;
         
         const hours = parseInt(parts[0]) || 0;
