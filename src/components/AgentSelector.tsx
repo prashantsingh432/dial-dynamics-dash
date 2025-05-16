@@ -1,0 +1,88 @@
+
+import React, { useMemo } from 'react';
+import { useDashboard } from '@/context/DashboardContext';
+import { cn } from '@/lib/utils';
+
+interface AgentSelectorProps {
+  className?: string;
+}
+
+const AgentSelector: React.FC<AgentSelectorProps> = ({ className }) => {
+  const { agentsList, filters, setAgent, sidebarCollapsed } = useDashboard();
+  
+  // Filter agents by the selected project
+  const filteredAgents = useMemo(() => {
+    if (filters.project === 'All') {
+      return agentsList;
+    }
+    return agentsList.filter(agent => agent.project === filters.project);
+  }, [agentsList, filters.project]);
+  
+  // Handle agent click
+  const handleAgentClick = (agentId: string) => {
+    if (filters.agent === agentId) {
+      // If clicking the same agent, deselect
+      setAgent(null);
+    } else {
+      setAgent(agentId);
+    }
+  };
+  
+  // If sidebar is collapsed, we'll only show icons
+  if (sidebarCollapsed) {
+    return (
+      <div className={cn("flex flex-col space-y-1", className)}>
+        <h3 className="sr-only">Agents</h3>
+        <div className="flex flex-col items-center space-y-2 pt-2">
+          {filteredAgents.slice(0, 5).map((agent) => (
+            <button
+              key={agent.id}
+              onClick={() => handleAgentClick(agent.id)}
+              className={cn(
+                "w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center",
+                filters.agent === agent.id ? "ring-2 ring-dashboard-blue" : ""
+              )}
+              title={agent.name}
+            >
+              {agent.name.charAt(0)}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  
+  return (
+    <div className={cn("flex flex-col space-y-1", className)}>
+      <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+        Agents
+      </h3>
+      
+      {filteredAgents.length === 0 ? (
+        <p className="px-3 py-2 text-sm text-gray-500 italic">No agents available</p>
+      ) : (
+        <ul className="mt-1">
+          {filteredAgents.map((agent) => (
+            <li key={agent.id}>
+              <button 
+                onClick={() => handleAgentClick(agent.id)}
+                className={cn(
+                  "w-full flex items-center px-3 py-2 text-sm rounded-md transition-all duration-200",
+                  "hover:bg-gray-100",
+                  filters.agent === agent.id ? "bg-blue-50 text-dashboard-blue font-medium" : "text-gray-700"
+                )}
+              >
+                <div className="w-7 h-7 rounded-full bg-gray-200 flex items-center justify-center">
+                  {agent.name.charAt(0)}
+                </div>
+                <span className="ml-3 truncate">{agent.name}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export default AgentSelector;
