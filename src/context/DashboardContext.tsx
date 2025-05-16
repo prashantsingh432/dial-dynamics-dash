@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 // Define types for our dashboard data
-export type Project = 'SS' | 'AngerBox' | 'LivingDSS' | 'Siri' | 'RatherUnique' | 'Sprockets' | 'All';
+export type Project = 'SIS NAG' | 'SS' | 'AngerBox' | 'LivingDSS' | 'Siri' | 'RatherUnique' | 'Sprockets' | 'All';
 export type TimeFrame = 'Daily' | 'Weekly' | 'Monthly';
 export type Agent = string | null;
 
@@ -25,7 +26,7 @@ export interface TopPerformer {
   id: string;
   name: string;
   avatar: string;
-  project: Project;
+  project: string;
   successRate: number;
   meetings: number;
   dials: number;
@@ -39,7 +40,7 @@ export interface ChartData {
 
 export interface ProjectPerformance {
   id: string;
-  name: Project;
+  name: string;
   dials: number;
   connected: number;
   talkTime: number;
@@ -78,157 +79,215 @@ export interface DashboardContextType {
   setProject: (project: Project) => void;
   setAgent: (agent: Agent) => void;
   isAnimating: boolean;
-  agentsList: { id: string; name: string; project: Project }[];
+  agentsList: { id: string; name: string; project: string }[];
   sidebarCollapsed: boolean;
   toggleSidebar: () => void;
 }
-
-// Create mock data generator functions
-const generateMockKPIs = (): KPIData => ({
-  totalDials: {
-    current: Math.floor(Math.random() * 5000) + 5000,
-    previous: Math.floor(Math.random() * 5000) + 5000,
-    percentChange: 0, // Will be calculated
-  },
-  totalConnected: {
-    current: Math.floor(Math.random() * 2000) + 2000,
-    previous: Math.floor(Math.random() * 2000) + 2000,
-    percentChange: 0,
-  },
-  totalTalkTime: {
-    current: Math.floor(Math.random() * 3000) + 3000,
-    previous: Math.floor(Math.random() * 3000) + 3000,
-    percentChange: 0,
-  },
-  scheduledMeetings: {
-    current: Math.floor(Math.random() * 500) + 300,
-    previous: Math.floor(Math.random() * 500) + 300,
-    percentChange: 0,
-  },
-  successfulMeetings: {
-    current: Math.floor(Math.random() * 300) + 100,
-    previous: Math.floor(Math.random() * 300) + 100,
-    percentChange: 0,
-  },
-});
-
-// Calculate percent changes
-const calculatePercentChanges = (kpis: KPIData): KPIData => {
-  const calculated = { ...kpis };
-  for (const key of Object.keys(calculated) as Array<keyof KPIData>) {
-    calculated[key].percentChange = 
-      ((calculated[key].current - calculated[key].previous) / calculated[key].previous) * 100;
-  }
-  return calculated;
-};
-
-// Mock agents list
-const mockAgents = [
-  { id: '1', name: 'Harshit Kumar', project: 'SS' as Project },
-  { id: '2', name: 'Priya Sharma', project: 'AngerBox' as Project },
-  { id: '3', name: 'Raj Verma', project: 'LivingDSS' as Project },
-  { id: '4', name: 'Ankit Patel', project: 'Siri' as Project },
-  { id: '5', name: 'Neha Singh', project: 'RatherUnique' as Project },
-  { id: '6', name: 'Vikram Chatterjee', project: 'Sprockets' as Project },
-  { id: '7', name: 'Sunita Gupta', project: 'SS' as Project },
-  { id: '8', name: 'Amit Kapoor', project: 'AngerBox' as Project },
-];
-
-// Top performers mock data
-const generateTopPerformers = (): TopPerformer[] => mockAgents.map((agent, index) => ({
-  ...agent,
-  avatar: `https://i.pravatar.cc/150?img=${index + 1}`,
-  successRate: Math.floor(Math.random() * 30) + 70,
-  meetings: Math.floor(Math.random() * 50) + 10,
-  dials: Math.floor(Math.random() * 300) + 200,
-})).sort((a, b) => b.successRate - a.successRate).slice(0, 5);
-
-// Generate chart data based on time frame
-const generateChartData = (timeFrame: TimeFrame): ChartData => {
-  let labels: string[] = [];
-  
-  switch (timeFrame) {
-    case 'Daily':
-      labels = ['9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM'];
-      break;
-    case 'Weekly':
-      labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-      break;
-    case 'Monthly':
-      labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-      break;
-  }
-  
-  return {
-    labels,
-    scheduled: labels.map(() => Math.floor(Math.random() * 50) + 30),
-    successful: labels.map(() => Math.floor(Math.random() * 30) + 10),
-  };
-};
-
-// Project performance data
-const generateProjectPerformance = (): ProjectPerformance[] => {
-  const projects: Project[] = ['SS', 'AngerBox', 'LivingDSS', 'Siri', 'RatherUnique', 'Sprockets'];
-  
-  return projects.map((project, index) => {
-    const dials = Math.floor(Math.random() * 2000) + 1000;
-    const connected = Math.floor(dials * (Math.random() * 0.3 + 0.4)); // 40-70% connection rate
-    const scheduledMeetings = Math.floor(connected * (Math.random() * 0.2 + 0.1)); // 10-30% schedule rate
-    const successfulMeetings = Math.floor(scheduledMeetings * (Math.random() * 0.4 + 0.5)); // 50-90% success rate
-    
-    return {
-      id: (index + 1).toString(),
-      name: project,
-      dials,
-      connected,
-      talkTime: Math.floor(connected * (Math.random() * 3 + 2)), // 2-5 minutes per connection
-      scheduledMeetings,
-      successfulMeetings,
-      successRate: (successfulMeetings / scheduledMeetings) * 100,
-    };
-  });
-};
-
-// Conversion funnel data
-const generateFunnelData = (): FunnelData[] => {
-  const dials = Math.floor(Math.random() * 3000) + 7000;
-  const answered = Math.floor(dials * (Math.random() * 0.3 + 0.4)); // 40-70%
-  const qualified = Math.floor(answered * (Math.random() * 0.4 + 0.3)); // 30-70%
-  const scheduled = Math.floor(qualified * (Math.random() * 0.5 + 0.3)); // 30-80%
-  const successful = Math.floor(scheduled * (Math.random() * 0.4 + 0.5)); // 50-90%
-  
-  return [
-    { stage: 'Dials', value: dials, color: '#3B82F6' },
-    { stage: 'Answered', value: answered, color: '#60A5FA' },
-    { stage: 'Qualified', value: qualified, color: '#93C5FD' },
-    { stage: 'Scheduled', value: scheduled, color: '#BFDBFE' },
-    { stage: 'Successful', value: successful, color: '#DBEAFE' },
-  ];
-};
-
-// Create the context
-const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 // Provider component
 export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [filters, setFilters] = useState<DashboardFilters>({
     timeFrame: 'Monthly',
-    secondaryTimeFrame: 'August',
+    secondaryTimeFrame: 'May',
     project: 'All',
     agent: null,
   });
   
   const [data, setData] = useState<DashboardData>({
-    kpis: calculatePercentChanges(generateMockKPIs()),
-    topPerformers: generateTopPerformers(),
-    performanceChart: generateChartData('Monthly'),
-    projectPerformance: generateProjectPerformance(),
-    conversionFunnel: generateFunnelData(),
+    kpis: {
+      totalDials: { current: 0, previous: 0, percentChange: 0 },
+      totalConnected: { current: 0, previous: 0, percentChange: 0 },
+      totalTalkTime: { current: 0, previous: 0, percentChange: 0 },
+      scheduledMeetings: { current: 0, previous: 0, percentChange: 0 },
+      successfulMeetings: { current: 0, previous: 0, percentChange: 0 },
+    },
+    topPerformers: [],
+    performanceChart: { labels: [], scheduled: [], successful: [] },
+    projectPerformance: [],
+    conversionFunnel: [],
   });
   
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [agentsList, setAgentsList] = useState<{ id: string; name: string; project: string }[]>([]);
+  
+  // Fetch agents list from Supabase
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const { data: agentsData, error } = await supabase
+          .from('agents')
+          .select(`
+            agent_id,
+            agent_name,
+            projects(project_name)
+          `);
+        
+        if (error) throw error;
+        
+        const formattedAgents = agentsData.map(agent => ({
+          id: agent.agent_id,
+          name: agent.agent_name,
+          project: agent.projects.project_name,
+        }));
+        
+        setAgentsList(formattedAgents);
+      } catch (error) {
+        console.error('Error fetching agents:', error);
+      }
+    };
+    
+    fetchAgents();
+  }, []);
+  
+  // Fetch KPIs from Supabase
+  const fetchKPIs = async () => {
+    try {
+      const { data: kpisData, error } = await supabase
+        .from('dashboard_kpis')
+        .select('*')
+        .single();
+      
+      if (error) {
+        console.error('Error fetching KPIs:', error);
+        return null;
+      }
+      
+      return {
+        totalDials: {
+          current: kpisData.total_dials,
+          previous: 9097,
+          percentChange: kpisData.dials_percent_change,
+        },
+        totalConnected: {
+          current: kpisData.total_connected,
+          previous: 3560,
+          percentChange: kpisData.connected_percent_change,
+        },
+        totalTalkTime: {
+          current: kpisData.total_talk_time_hours,
+          previous: 5199,
+          percentChange: kpisData.talk_time_percent_change,
+        },
+        scheduledMeetings: {
+          current: kpisData.meetings_scheduled,
+          previous: 577,
+          percentChange: kpisData.scheduled_percent_change,
+        },
+        successfulMeetings: {
+          current: kpisData.meetings_successful,
+          previous: 138,
+          percentChange: kpisData.successful_percent_change,
+        },
+      };
+    } catch (error) {
+      console.error('Error in fetchKPIs:', error);
+      return null;
+    }
+  };
+  
+  // Fetch weekly performance data for chart
+  const fetchPerformanceChart = async () => {
+    try {
+      const { data: chartData, error } = await supabase
+        .from('weekly_performance_chart')
+        .select('*')
+        .order('week_number');
+      
+      if (error) {
+        console.error('Error fetching chart data:', error);
+        return null;
+      }
+      
+      const labels = chartData.map(item => `Week ${item.week_number}`);
+      const scheduled = chartData.map(item => item.scheduled_meetings);
+      const successful = chartData.map(item => item.successful_meetings);
+      
+      return { labels, scheduled, successful };
+    } catch (error) {
+      console.error('Error in fetchPerformanceChart:', error);
+      return null;
+    }
+  };
+  
+  // Fetch project performance data
+  const fetchProjectPerformance = async () => {
+    try {
+      const { data: projectData, error } = await supabase
+        .from('project_performance')
+        .select('*');
+      
+      if (error) {
+        console.error('Error fetching project performance:', error);
+        return null;
+      }
+      
+      return projectData.map(project => ({
+        id: project.project_id,
+        name: project.project_name,
+        dials: project.total_dials,
+        connected: project.total_connects,
+        talkTime: project.total_talk_time_minutes,
+        scheduledMeetings: project.meetings_scheduled,
+        successfulMeetings: project.meetings_successful,
+        successRate: project.success_rate,
+      }));
+    } catch (error) {
+      console.error('Error in fetchProjectPerformance:', error);
+      return null;
+    }
+  };
+  
+  // Fetch conversion funnel data
+  const fetchConversionFunnel = async () => {
+    try {
+      const { data: funnelData, error } = await supabase
+        .from('conversion_funnel')
+        .select('*');
+      
+      if (error) {
+        console.error('Error fetching conversion funnel:', error);
+        return null;
+      }
+      
+      return funnelData.map(item => ({
+        stage: item.stage,
+        value: item.value,
+        color: item.color,
+      }));
+    } catch (error) {
+      console.error('Error in fetchConversionFunnel:', error);
+      return null;
+    }
+  };
+  
+  // Fetch top performers data
+  const fetchTopPerformers = async () => {
+    try {
+      const { data: performersData, error } = await supabase
+        .from('top_performers')
+        .select('*');
+      
+      if (error) {
+        console.error('Error fetching top performers:', error);
+        return null;
+      }
+      
+      return performersData.map((performer, index) => ({
+        id: performer.agent_id,
+        name: performer.agent_name,
+        avatar: `https://i.pravatar.cc/150?img=${index + 1}`,
+        project: performer.project_name,
+        successRate: performer.success_rate,
+        meetings: performer.successful_meetings,
+        dials: performer.total_dials,
+      }));
+    } catch (error) {
+      console.error('Error in fetchTopPerformers:', error);
+      return null;
+    }
+  };
   
   // Update data when filters change
   useEffect(() => {
@@ -236,22 +295,30 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
       setLoading(true);
       setIsAnimating(true);
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const newData: DashboardData = {
-        kpis: calculatePercentChanges(generateMockKPIs()),
-        topPerformers: generateTopPerformers(),
-        performanceChart: generateChartData(filters.timeFrame),
-        projectPerformance: generateProjectPerformance(),
-        conversionFunnel: generateFunnelData(),
-      };
-      
-      setData(newData);
-      setLoading(false);
-      
-      // Keep animation state active for a bit longer to ensure transitions complete
-      setTimeout(() => setIsAnimating(false), 300);
+      try {
+        const [kpis, performanceChart, projectPerformance, conversionFunnel, topPerformers] = await Promise.all([
+          fetchKPIs(),
+          fetchPerformanceChart(),
+          fetchProjectPerformance(),
+          fetchConversionFunnel(),
+          fetchTopPerformers(),
+        ]);
+        
+        setData({
+          kpis: kpis || data.kpis,
+          performanceChart: performanceChart || data.performanceChart,
+          projectPerformance: projectPerformance || data.projectPerformance,
+          conversionFunnel: conversionFunnel || data.conversionFunnel,
+          topPerformers: topPerformers || data.topPerformers,
+        });
+      } catch (error) {
+        console.error('Error updating dashboard data:', error);
+      } finally {
+        setLoading(false);
+        
+        // Keep animation state active for a bit longer to ensure transitions complete
+        setTimeout(() => setIsAnimating(false), 300);
+      }
     };
     
     updateData();
@@ -290,7 +357,7 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
         setProject,
         setAgent,
         isAnimating,
-        agentsList: mockAgents,
+        agentsList,
         sidebarCollapsed,
         toggleSidebar,
       }}
@@ -299,6 +366,9 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
     </DashboardContext.Provider>
   );
 };
+
+// Create the context
+const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 // Hook to use the dashboard context
 export const useDashboard = () => {

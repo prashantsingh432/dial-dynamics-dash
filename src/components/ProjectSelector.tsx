@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDashboard, Project } from '@/context/DashboardContext';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProjectSelectorProps {
   className?: string;
@@ -9,9 +10,27 @@ interface ProjectSelectorProps {
 
 const ProjectSelector: React.FC<ProjectSelectorProps> = ({ className }) => {
   const { filters, setProject, sidebarCollapsed } = useDashboard();
+  const [projects, setProjects] = useState<Project[]>(['All']);
   
-  // Projects array
-  const projects: Project[] = ['All', 'SS', 'AngerBox', 'LivingDSS', 'Siri', 'RatherUnique', 'Sprockets'];
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('project_name')
+          .order('project_name');
+        
+        if (error) throw error;
+        
+        const projectNames = data.map(p => p.project_name as Project);
+        setProjects(['All', ...projectNames]);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
+    
+    fetchProjects();
+  }, []);
   
   // Generate project icon (simplified for this demo)
   const getProjectIcon = (project: Project) => {

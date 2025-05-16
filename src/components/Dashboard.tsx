@@ -9,12 +9,14 @@ import PerformanceChart from './PerformanceChart';
 import ConversionFunnel from './ConversionFunnel';
 import ProjectPerformance from './ProjectPerformance';
 import TopPerformers from './TopPerformers';
+import LoadingOverlay from './LoadingOverlay';
 
 const Dashboard: React.FC = () => {
   const { filters, loading } = useDashboard();
   
   return (
     <div className="flex h-screen bg-gray-50">
+      <LoadingOverlay show={loading} />
       <Sidebar />
       
       <div className="flex-1 flex flex-col overflow-hidden">

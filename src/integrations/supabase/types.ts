@@ -9,10 +9,191 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      agents: {
+        Row: {
+          agent_id: string
+          agent_name: string
+          created_at: string
+          project_id: string
+        }
+        Insert: {
+          agent_id?: string
+          agent_name: string
+          created_at?: string
+          project_id: string
+        }
+        Update: {
+          agent_id?: string
+          agent_name?: string
+          created_at?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_performance"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "agents_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["project_id"]
+          },
+        ]
+      }
+      daily_performance: {
+        Row: {
+          agent_id: string
+          date: string
+          meetings_scheduled: number | null
+          meetings_successful: number | null
+          month: string
+          project_id: string
+          record_id: string
+          total_connects: number | null
+          total_dials: number | null
+          total_pitches: number | null
+          total_talktime: unknown | null
+          week_number: number
+        }
+        Insert: {
+          agent_id: string
+          date: string
+          meetings_scheduled?: number | null
+          meetings_successful?: number | null
+          month: string
+          project_id: string
+          record_id?: string
+          total_connects?: number | null
+          total_dials?: number | null
+          total_pitches?: number | null
+          total_talktime?: unknown | null
+          week_number: number
+        }
+        Update: {
+          agent_id?: string
+          date?: string
+          meetings_scheduled?: number | null
+          meetings_successful?: number | null
+          month?: string
+          project_id?: string
+          record_id?: string
+          total_connects?: number | null
+          total_dials?: number | null
+          total_pitches?: number | null
+          total_talktime?: unknown | null
+          week_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_performance_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "agents"
+            referencedColumns: ["agent_id"]
+          },
+          {
+            foreignKeyName: "daily_performance_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "top_performers"
+            referencedColumns: ["agent_id"]
+          },
+          {
+            foreignKeyName: "daily_performance_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "project_performance"
+            referencedColumns: ["project_id"]
+          },
+          {
+            foreignKeyName: "daily_performance_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["project_id"]
+          },
+        ]
+      }
+      projects: {
+        Row: {
+          created_at: string
+          project_id: string
+          project_name: string
+        }
+        Insert: {
+          created_at?: string
+          project_id?: string
+          project_name: string
+        }
+        Update: {
+          created_at?: string
+          project_id?: string
+          project_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      conversion_funnel: {
+        Row: {
+          color: string | null
+          stage: string | null
+          value: number | null
+        }
+        Relationships: []
+      }
+      dashboard_kpis: {
+        Row: {
+          connected_percent_change: number | null
+          dials_percent_change: number | null
+          meetings_scheduled: number | null
+          meetings_successful: number | null
+          scheduled_percent_change: number | null
+          successful_percent_change: number | null
+          talk_time_percent_change: number | null
+          total_connected: number | null
+          total_dials: number | null
+          total_talk_time_hours: number | null
+        }
+        Relationships: []
+      }
+      project_performance: {
+        Row: {
+          meetings_scheduled: number | null
+          meetings_successful: number | null
+          project_id: string | null
+          project_name: string | null
+          success_rate: number | null
+          total_connects: number | null
+          total_dials: number | null
+          total_talk_time_minutes: number | null
+        }
+        Relationships: []
+      }
+      top_performers: {
+        Row: {
+          agent_id: string | null
+          agent_name: string | null
+          project_name: string | null
+          success_rate: number | null
+          successful_meetings: number | null
+          total_dials: number | null
+        }
+        Relationships: []
+      }
+      weekly_performance_chart: {
+        Row: {
+          scheduled_meetings: number | null
+          successful_meetings: number | null
+          week_number: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
