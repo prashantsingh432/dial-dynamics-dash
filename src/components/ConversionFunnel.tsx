@@ -1,13 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useDashboard } from '@/context/DashboardContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
+import { motion } from 'framer-motion';
 
 const ConversionFunnel: React.FC = () => {
   const { data, isAnimating } = useDashboard();
   const { conversionFunnel } = data;
+  const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
   
   // Create data for the pie chart (donut)
   const chartData = conversionFunnel.map(item => ({
@@ -32,59 +34,108 @@ const ConversionFunnel: React.FC = () => {
         <div className="bg-white p-3 shadow-md rounded-md border border-gray-200">
           <p className="font-semibold">{data.name}</p>
           <p className="text-dashboard-blue">{data.value.toLocaleString()}</p>
+          <p className="text-xs text-gray-500 mt-1">
+            {((data.value / getTotalDials()) * 100).toFixed(1)}% of total
+          </p>
         </div>
       );
     }
     return null;
   };
+
+  // Active shape for hover effect
+  const renderActiveShape = (props: any) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+    
+    return (
+      <g>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius + 6}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+          opacity={0.8}
+        />
+      </g>
+    );
+  };
+  
+  const onPieEnter = (_: any, index: number) => {
+    setActiveIndex(index);
+  };
+  
+  const onPieLeave = () => {
+    setActiveIndex(undefined);
+  };
   
   return (
-    <Card className={cn(
-      "h-full transition-opacity duration-500",
-      isAnimating ? 'opacity-0' : 'opacity-100'
-    )}>
-      <CardHeader>
-        <CardTitle className="text-lg">Conversion Funnel</CardTitle>
-      </CardHeader>
-      
-      <CardContent>
-        <div className="h-[250px] flex items-center justify-center">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={chartData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={90}
-                paddingAngle={2}
-                dataKey="value"
-              >
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.4 }}
+    >
+      <Card className={cn(
+        "h-full transition-all duration-500 enhanced-card",
+        isAnimating ? 'opacity-0' : 'opacity-100'
+      )}>
+        <CardHeader>
+          <CardTitle className="text-lg font-poppins text-dashboard-blue">Conversion Funnel</CardTitle>
+        </CardHeader>
         
-        <div className="grid grid-cols-3 mt-4 gap-2 text-center">
-          <div className="bg-blue-50 p-2 rounded-md">
-            <div className="text-xs text-gray-500">Answer Rate</div>
-            <div className="font-semibold text-dashboard-blue">{getConversionRate(1)}%</div>
+        <CardContent>
+          <div className="h-[250px] flex items-center justify-center">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={60}
+                  outerRadius={90}
+                  paddingAngle={2}
+                  dataKey="value"
+                  onMouseEnter={onPieEnter}
+                  onMouseLeave={onPieLeave}
+                  activeIndex={activeIndex}
+                  activeShape={renderActiveShape}
+                  animationBegin={200}
+                  animationDuration={800}
+                  animationEasing="ease-out"
+                >
+                  {chartData.map((entry, index) => (
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={entry.color} 
+                      stroke="white" 
+                      strokeWidth={1}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
           </div>
-          <div className="bg-blue-50 p-2 rounded-md">
-            <div className="text-xs text-gray-500">Schedule Rate</div>
-            <div className="font-semibold text-dashboard-blue">{getConversionRate(3)}%</div>
+          
+          <div className="grid grid-cols-3 mt-6 gap-3">
+            <div className="bg-blue-50 p-3 rounded-xl hover:bg-blue-100 transition-colors duration-300 border border-blue-100">
+              <div className="text-xs text-gray-500">Answer Rate</div>
+              <div className="font-semibold text-dashboard-blue text-xl">{getConversionRate(1)}%</div>
+            </div>
+            <div className="bg-blue-50 p-3 rounded-xl hover:bg-blue-100 transition-colors duration-300 border border-blue-100">
+              <div className="text-xs text-gray-500">Schedule Rate</div>
+              <div className="font-semibold text-dashboard-blue text-xl">{getConversionRate(3)}%</div>
+            </div>
+            <div className="bg-blue-50 p-3 rounded-xl hover:bg-blue-100 transition-colors duration-300 border border-blue-100">
+              <div className="text-xs text-gray-500">Success Rate</div>
+              <div className="font-semibold text-dashboard-blue text-xl">{getConversionRate(4)}%</div>
+            </div>
           </div>
-          <div className="bg-blue-50 p-2 rounded-md">
-            <div className="text-xs text-gray-500">Success Rate</div>
-            <div className="font-semibold text-dashboard-blue">{getConversionRate(4)}%</div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 

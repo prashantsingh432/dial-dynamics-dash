@@ -1,40 +1,76 @@
 
 import React from 'react';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { Calendar, AlertCircle } from 'lucide-react';
 
 interface DataNotFoundPageProps {
-  month?: string;
+  month: string;
   onGoBack: () => void;
 }
 
 const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) => {
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
-      <h1 className="text-5xl font-bold mb-4 text-dashboard-blue">404</h1>
+    <motion.div 
+      className="flex flex-col items-center justify-center h-full p-6 text-center max-w-md mx-auto"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <motion.div
+        initial={{ y: -20 }}
+        animate={{ y: [0, -15, 0] }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+        className="mb-6 text-dashboard-blue"
+      >
+        <Calendar size={120} strokeWidth={1} />
+      </motion.div>
       
-      <div className="w-40 h-40 my-4">
-        <img 
-          src="/placeholder.svg" 
-          alt="Data not found" 
-          className="w-full h-full object-contain"
-        />
-      </div>
+      <motion.h1 
+        className="text-3xl font-bold mb-3 text-gray-800 font-poppins"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+      >
+        No Data Available
+      </motion.h1>
       
-      <h3 className="text-2xl font-semibold mt-4 mb-2">
-        Looks like you're lost
-      </h3>
+      <motion.div 
+        className="flex items-center gap-2 mb-6 text-amber-500 bg-amber-50 px-4 py-2 rounded-lg"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        <AlertCircle className="h-5 w-5" />
+        <p className="text-sm">Data for <strong>{month}</strong> is not yet available</p>
+      </motion.div>
       
-      <p className="text-gray-500 mb-6">
-        {month 
-          ? `The data for ${month} is not available yet!` 
-          : "The data you are looking for is not available!"
-        }
-      </p>
+      <motion.p 
+        className="text-gray-600 mb-8 max-w-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+      >
+        Please try selecting a different time period or check back later when data for this period has been uploaded.
+      </motion.p>
       
-      <Button onClick={onGoBack} className="bg-dashboard-green hover:bg-dashboard-green/90">
-        Go to Dashboard
-      </Button>
-    </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.9 }}
+      >
+        <Button 
+          onClick={onGoBack} 
+          className="bg-dashboard-blue hover:bg-blue-700 transition-colors"
+        >
+          Go Back to Dashboard
+        </Button>
+      </motion.div>
+    </motion.div>
   );
 };
 

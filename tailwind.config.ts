@@ -63,16 +63,22 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-                // Dashboard specific colors
+                // Dashboard specific colors - enhanced with additional shades
                 dashboard: {
                     blue: '#1D4ED8',
                     lightBlue: '#3B82F6',
+                    brightBlue: '#60A5FA',
+                    paleBlue: '#EFF6FF',
                     green: '#10B981',
+                    lightGreen: '#A7F3D0',
                     amber: '#F59E0B',
+                    lightAmber: '#FDE68A',
                     red: '#EF4444',
+                    lightRed: '#FECACA',
                     background: '#F9FAFB',
                     surface: '#FFFFFF',
-                    text: '#1F2937'
+                    text: '#1F2937',
+                    textSecondary: '#6B7280'
                 }
 			},
 			borderRadius: {
@@ -97,7 +103,7 @@ export default {
 						height: '0'
 					}
 				},
-                // Dashboard animations
+                // Dashboard animations - enhanced with improved timings and effects
                 'fade-in': {
                     '0%': { opacity: '0', transform: 'translateY(10px)' },
                     '100%': { opacity: '1', transform: 'translateY(0)' }
@@ -132,25 +138,48 @@ export default {
                     '0%': { opacity: '1' },
                     '50%': { opacity: '0.5' },
                     '100%': { opacity: '1' }
+                },
+                'float': {
+                    '0%': { transform: 'translateY(0px)' },
+                    '50%': { transform: 'translateY(-5px)' },
+                    '100%': { transform: 'translateY(0px)' }
+                },
+                'shimmer': {
+                    '0%': { backgroundPosition: '-200% 0' },
+                    '100%': { backgroundPosition: '200% 0' },
                 }
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
                 // Dashboard animations
-                'fade-in': 'fade-in 0.3s ease-out',
-                'fade-out': 'fade-out 0.3s ease-out',
-                'scale-in': 'scale-in 0.2s ease-out',
-                'scale-out': 'scale-out 0.2s ease-out',
-                'slide-in-right': 'slide-in-right 0.3s ease-out',
-                'slide-out-right': 'slide-out-right 0.3s ease-out',
-                'enter': 'fade-in 0.3s ease-out, scale-in 0.2s ease-out',
-                'exit': 'fade-out 0.3s ease-out, scale-out 0.2s ease-out',
+                'fade-in': 'fade-in 0.4s ease-out',
+                'fade-out': 'fade-out 0.4s ease-out',
+                'scale-in': 'scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                'scale-out': 'scale-out 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                'slide-in-right': 'slide-in-right 0.4s ease-out',
+                'slide-out-right': 'slide-out-right 0.4s ease-out',
+                'enter': 'fade-in 0.4s ease-out, scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                'exit': 'fade-out 0.4s ease-out, scale-out 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
                 'counter': 'counter 0.5s ease-out',
-                'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                'float': 'float 3s ease-in-out infinite',
+                'shimmer': 'shimmer 2s infinite linear'
 			},
             fontFamily: {
                 'inter': ['Inter', 'sans-serif'],
+                'poppins': ['Poppins', 'sans-serif'],
+            },
+            scale: {
+                '102': '1.02',
+            },
+            boxShadow: {
+                'card': '0px 4px 12px rgba(0, 0, 0, 0.05)',
+                'card-hover': '0px 8px 24px rgba(0, 0, 0, 0.08)',
+            },
+            backgroundImage: {
+                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                'shimmer': 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0) 100%)',
             }
 		}
 	},
