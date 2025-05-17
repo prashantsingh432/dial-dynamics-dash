@@ -2,7 +2,7 @@
 import React from 'react';
 import { useDashboard } from '@/context/DashboardContext';
 import KPICard from './KPICard';
-import { Phone, PhoneCall, Clock, Calendar, CalendarCheck } from 'lucide-react';
+import { Phone, Check, Clock, Calendar, CheckCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const KPISection: React.FC = () => {
@@ -36,41 +36,46 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Total Dials"
         value={kpis.totalDials.current}
-        icon={<Phone className="w-6 h-6 text-white" strokeWidth={1.5} />}
-        className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300'}
+        percentChange={kpis.totalDials.percentChange}
+        icon={<Phone className="w-5 h-5 text-white" strokeWidth={1.5} />}
+        color="purple"
         index={0}
       />
       
       <KPICard
         title="Total Connected"
         value={kpis.totalConnected.current}
-        icon={<PhoneCall className="w-6 h-6 text-white" strokeWidth={1.5} />}
-        className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-75'}
+        percentChange={kpis.totalConnected.percentChange}
+        icon={<Check className="w-5 h-5 text-white" strokeWidth={1.5} />}
+        color="green"
         index={1}
       />
       
       <KPICard
         title="Total Talk Time"
         value={kpis.totalTalkTime.current}
-        icon={<Clock className="w-6 h-6 text-white" strokeWidth={1.5} />}
+        percentChange={kpis.totalTalkTime.percentChange}
+        icon={<Clock className="w-5 h-5 text-white" strokeWidth={1.5} />}
         formatter={formatMinutes}
-        className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-150'}
+        color="amber"
         index={2}
       />
       
       <KPICard
         title="Scheduled Meetings"
         value={kpis.scheduledMeetings.current}
-        icon={<Calendar className="w-6 h-6 text-white" strokeWidth={1.5} />}
-        className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-225'}
+        percentChange={kpis.scheduledMeetings.percentChange}
+        icon={<Calendar className="w-5 h-5 text-white" strokeWidth={1.5} />}
+        color="rose"
         index={3}
       />
       
       <KPICard
         title="Successful Meetings"
         value={kpis.successfulMeetings.current}
-        icon={<CalendarCheck className="w-6 h-6 text-white" strokeWidth={1.5} />}
-        className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-300'}
+        percentChange={kpis.successfulMeetings.percentChange}
+        icon={<CheckCheck className="w-5 h-5 text-white" strokeWidth={1.5} />}
+        color="cyan"
         index={4}
       />
     </motion.div>

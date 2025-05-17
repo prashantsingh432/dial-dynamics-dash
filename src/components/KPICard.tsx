@@ -2,48 +2,89 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { ArrowUpIcon } from 'lucide-react';
 
 interface KPICardProps {
   title: string;
   value: number;
+  percentChange?: number;
   icon: React.ReactNode;
   formatter?: (value: number) => string;
   className?: string;
+  color?: "purple" | "green" | "amber" | "rose" | "cyan" | "blue";
   index?: number;
 }
 
 const KPICard: React.FC<KPICardProps> = ({
   title,
   value,
+  percentChange = 0,
   icon,
   formatter = (val) => val.toLocaleString(),
   className,
+  color = "blue",
   index = 0
 }) => {
-  // Determine color based on title
-  const getIconColorClass = () => {
-    switch (title) {
-      case "Total Dials":
-        return "from-purple-400 to-purple-600 text-purple-700";
-      case "Total Connected":
-        return "from-emerald-400 to-emerald-600 text-emerald-700";
-      case "Total Talk Time":
-        return "from-amber-400 to-amber-600 text-amber-700";
-      case "Scheduled Meetings":
-        return "from-rose-400 to-rose-600 text-rose-700";
-      case "Successful Meetings":
-        return "from-cyan-400 to-cyan-600 text-cyan-700";
+  // Determine color based on prop
+  const getColorClasses = () => {
+    switch (color) {
+      case "purple":
+        return {
+          bg: "bg-gradient-to-r from-purple-400 to-purple-600",
+          iconBg: "bg-gradient-to-br from-purple-50/30 to-purple-100/10",
+          text: "text-purple-600",
+          progressBg: "bg-purple-100",
+          progressFill: "bg-purple-600"
+        };
+      case "green":
+        return {
+          bg: "bg-gradient-to-r from-emerald-400 to-emerald-600",
+          iconBg: "bg-gradient-to-br from-emerald-50/30 to-emerald-100/10",
+          text: "text-emerald-600",
+          progressBg: "bg-emerald-100",
+          progressFill: "bg-emerald-600"
+        };
+      case "amber":
+        return {
+          bg: "bg-gradient-to-r from-amber-400 to-amber-600",
+          iconBg: "bg-gradient-to-br from-amber-50/30 to-amber-100/10",
+          text: "text-amber-600",
+          progressBg: "bg-amber-100",
+          progressFill: "bg-amber-600"
+        };
+      case "rose":
+        return {
+          bg: "bg-gradient-to-r from-rose-400 to-rose-600",
+          iconBg: "bg-gradient-to-br from-rose-50/30 to-rose-100/10",
+          text: "text-rose-600",
+          progressBg: "bg-rose-100",
+          progressFill: "bg-rose-600"
+        };
+      case "cyan":
+        return {
+          bg: "bg-gradient-to-r from-cyan-400 to-cyan-600",
+          iconBg: "bg-gradient-to-br from-cyan-50/30 to-cyan-100/10",
+          text: "text-cyan-600",
+          progressBg: "bg-cyan-100",
+          progressFill: "bg-cyan-600"
+        };
       default:
-        return "from-blue-400 to-blue-600 text-dashboard-blue";
+        return {
+          bg: "bg-gradient-to-r from-blue-400 to-blue-600",
+          iconBg: "bg-gradient-to-br from-blue-50/30 to-blue-100/10",
+          text: "text-blue-600",
+          progressBg: "bg-blue-100",
+          progressFill: "bg-blue-600"
+        };
     }
   };
 
-  const iconColorClass = getIconColorClass();
+  const colors = getColorClasses();
   
   return (
     <motion.div 
       className={cn(
-        "kpi-card group relative overflow-hidden z-10", 
+        "relative overflow-hidden rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100", 
         className
       )}
       initial={{ opacity: 0, y: 20 }}
@@ -58,30 +99,11 @@ const KPICard: React.FC<KPICardProps> = ({
         transition: { duration: 0.2 }
       }}
     >
-      {/* Glassmorphism background effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/90 to-white/50 dark:from-slate-800/90 dark:to-slate-800/50 backdrop-blur-sm z-0 rounded-xl" />
-      
-      {/* Animated border */}
-      <motion.div 
-        className="absolute inset-0 rounded-xl border border-transparent z-0"
-        initial={{ borderColor: 'rgba(255, 255, 255, 0)' }}
-        animate={{ borderColor: 'rgba(255, 255, 255, 0)' }}
-        whileHover={{ borderColor: 'rgba(99, 102, 241, 0.5)' }}
-        transition={{ duration: 0.3 }}
-      />
-      
       {/* Card content */}
-      <div className="flex justify-between items-center relative z-10 p-5">
-        <motion.h3 
-          className="title text-sm font-medium text-gray-600 dark:text-gray-300"
-          initial={{ x: -10, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.1 + index * 0.1 }}
-        >
-          {title}
-        </motion.h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-medium text-gray-500">{title}</h3>
         <motion.div 
-          className={`w-12 h-12 rounded-full flex items-center justify-center bg-gradient-to-br ${iconColorClass} shadow-md group-hover:shadow-lg transition-all`}
+          className={`w-10 h-10 rounded-full flex items-center justify-center ${colors.bg} shadow-md`}
           whileHover={{ 
             rotate: 15,
             scale: 1.1 
@@ -102,12 +124,7 @@ const KPICard: React.FC<KPICardProps> = ({
       </div>
       
       <motion.div 
-        className={`value text-3xl font-bold px-5 pb-5 font-poppins ${title === "Total Dials" ? "text-purple-600" : 
-                     title === "Total Connected" ? "text-emerald-600" : 
-                     title === "Total Talk Time" ? "text-amber-600" : 
-                     title === "Scheduled Meetings" ? "text-rose-600" : 
-                     title === "Successful Meetings" ? "text-cyan-600" : 
-                     "text-dashboard-blue"}`}
+        className={`text-3xl font-bold mt-4 ${colors.text} font-poppins`}
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ 
@@ -120,16 +137,19 @@ const KPICard: React.FC<KPICardProps> = ({
         {formatter(value)}
       </motion.div>
       
+      {percentChange !== 0 && (
+        <div className="flex items-center mt-2">
+          <span className={`flex items-center text-xs ${percentChange > 0 ? 'text-green-600' : 'text-rose-600'} font-medium`}>
+            <ArrowUpIcon className={`h-3 w-3 mr-1 ${percentChange < 0 ? 'rotate-180' : ''}`} />
+            {Math.abs(percentChange).toFixed(1)}%
+          </span>
+          <span className="text-xs text-gray-400 ml-1">from previous period</span>
+        </div>
+      )}
+      
       {/* Subtle decoration element */}
       <motion.div 
-        className={`absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-gradient-to-tl ${
-          title === "Total Dials" ? "from-purple-100/40 to-transparent" : 
-          title === "Total Connected" ? "from-emerald-100/40 to-transparent" : 
-          title === "Total Talk Time" ? "from-amber-100/40 to-transparent" : 
-          title === "Scheduled Meetings" ? "from-rose-100/40 to-transparent" : 
-          title === "Successful Meetings" ? "from-cyan-100/40 to-transparent" : 
-          "from-blue-100/40 to-transparent"
-        } dark:opacity-25 z-0`}
+        className={`absolute -bottom-6 -right-6 w-24 h-24 rounded-full ${colors.iconBg} dark:opacity-25 z-0`}
         animate={{ 
           scale: [1, 1.05, 1],
         }}
