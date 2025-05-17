@@ -2,7 +2,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
-import { ArrowUpIcon } from 'lucide-react';
+import { ArrowUpIcon, ArrowDownIcon } from 'lucide-react';
 
 interface KPICardProps {
   title: string;
@@ -30,51 +30,69 @@ const KPICard: React.FC<KPICardProps> = ({
     switch (color) {
       case "purple":
         return {
-          bg: "bg-gradient-to-r from-purple-400 to-purple-600",
-          iconBg: "bg-gradient-to-br from-purple-50/30 to-purple-100/10",
-          text: "text-purple-600",
-          progressBg: "bg-purple-100",
-          progressFill: "bg-purple-600"
+          bg: "bg-gradient-to-br from-purple-50 to-purple-100",
+          accent: "bg-purple-500",
+          text: "text-purple-700",
+          lightText: "text-purple-600",
+          barBg: "bg-purple-100",
+          barFill: "bg-purple-500",
+          icon: "text-purple-600",
+          iconBg: "bg-purple-100"
         };
       case "green":
         return {
-          bg: "bg-gradient-to-r from-emerald-400 to-emerald-600",
-          iconBg: "bg-gradient-to-br from-emerald-50/30 to-emerald-100/10",
-          text: "text-emerald-600",
-          progressBg: "bg-emerald-100",
-          progressFill: "bg-emerald-600"
+          bg: "bg-gradient-to-br from-emerald-50 to-emerald-100",
+          accent: "bg-emerald-500",
+          text: "text-emerald-700",
+          lightText: "text-emerald-600",
+          barBg: "bg-emerald-100",
+          barFill: "bg-emerald-500",
+          icon: "text-emerald-600",
+          iconBg: "bg-emerald-100"
         };
       case "amber":
         return {
-          bg: "bg-gradient-to-r from-amber-400 to-amber-600",
-          iconBg: "bg-gradient-to-br from-amber-50/30 to-amber-100/10",
-          text: "text-amber-600",
-          progressBg: "bg-amber-100",
-          progressFill: "bg-amber-600"
+          bg: "bg-gradient-to-br from-amber-50 to-amber-100",
+          accent: "bg-amber-500",
+          text: "text-amber-700",
+          lightText: "text-amber-600",
+          barBg: "bg-amber-100",
+          barFill: "bg-amber-500",
+          icon: "text-amber-600",
+          iconBg: "bg-amber-100"
         };
       case "rose":
         return {
-          bg: "bg-gradient-to-r from-rose-400 to-rose-600",
-          iconBg: "bg-gradient-to-br from-rose-50/30 to-rose-100/10",
-          text: "text-rose-600",
-          progressBg: "bg-rose-100",
-          progressFill: "bg-rose-600"
+          bg: "bg-gradient-to-br from-rose-50 to-rose-100",
+          accent: "bg-rose-500",
+          text: "text-rose-700",
+          lightText: "text-rose-600",
+          barBg: "bg-rose-100",
+          barFill: "bg-rose-500",
+          icon: "text-rose-600",
+          iconBg: "bg-rose-100"
         };
       case "cyan":
         return {
-          bg: "bg-gradient-to-r from-cyan-400 to-cyan-600",
-          iconBg: "bg-gradient-to-br from-cyan-50/30 to-cyan-100/10",
-          text: "text-cyan-600",
-          progressBg: "bg-cyan-100",
-          progressFill: "bg-cyan-600"
+          bg: "bg-gradient-to-br from-cyan-50 to-cyan-100",
+          accent: "bg-cyan-500",
+          text: "text-cyan-700",
+          lightText: "text-cyan-600",
+          barBg: "bg-cyan-100",
+          barFill: "bg-cyan-500",
+          icon: "text-cyan-600",
+          iconBg: "bg-cyan-100"
         };
       default:
         return {
-          bg: "bg-gradient-to-r from-blue-400 to-blue-600",
-          iconBg: "bg-gradient-to-br from-blue-50/30 to-blue-100/10",
-          text: "text-blue-600",
-          progressBg: "bg-blue-100",
-          progressFill: "bg-blue-600"
+          bg: "bg-gradient-to-br from-blue-50 to-blue-100",
+          accent: "bg-blue-500",
+          text: "text-blue-700",
+          lightText: "text-blue-600",
+          barBg: "bg-blue-100",
+          barFill: "bg-blue-500",
+          icon: "text-blue-600",
+          iconBg: "bg-blue-100"
         };
     }
   };
@@ -84,7 +102,8 @@ const KPICard: React.FC<KPICardProps> = ({
   return (
     <motion.div 
       className={cn(
-        "relative overflow-hidden rounded-xl bg-white p-5 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100", 
+        "relative overflow-hidden rounded-xl bg-white p-5 border border-gray-100 hover:shadow-md transition-all duration-300", 
+        colors.bg,
         className
       )}
       initial={{ opacity: 0, y: 20 }}
@@ -95,36 +114,26 @@ const KPICard: React.FC<KPICardProps> = ({
         ease: [0.4, 0, 0.2, 1]
       }}
       whileHover={{ 
-        y: -5,
+        y: -3,
+        boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
         transition: { duration: 0.2 }
       }}
     >
-      {/* Card content */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-medium text-gray-500">{title}</h3>
         <motion.div 
-          className={`w-10 h-10 rounded-full flex items-center justify-center ${colors.bg} shadow-md`}
+          className={`w-10 h-10 rounded-lg flex items-center justify-center ${colors.iconBg}`}
           whileHover={{ 
-            rotate: 15,
-            scale: 1.1 
-          }}
-          animate={{ 
-            y: [0, -3, 0],
-          }}
-          transition={{ 
-            type: 'spring', 
-            stiffness: 200,
-            duration: 2,
-            repeat: Infinity,
-            repeatType: "reverse"
+            rotate: 5,
+            scale: 1.05 
           }}
         >
-          {icon}
+          <div className={`${colors.icon}`}>{icon}</div>
         </motion.div>
       </div>
       
       <motion.div 
-        className={`text-3xl font-bold mt-4 ${colors.text} font-poppins`}
+        className={`text-3xl font-bold mb-2 ${colors.text}`}
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ 
@@ -138,27 +147,30 @@ const KPICard: React.FC<KPICardProps> = ({
       </motion.div>
       
       {percentChange !== 0 && (
-        <div className="flex items-center mt-2">
-          <span className={`flex items-center text-xs ${percentChange > 0 ? 'text-green-600' : 'text-rose-600'} font-medium`}>
-            <ArrowUpIcon className={`h-3 w-3 mr-1 ${percentChange < 0 ? 'rotate-180' : ''}`} />
+        <div className="flex items-center">
+          <span className={`flex items-center text-xs font-medium ${percentChange > 0 ? 'text-green-600' : 'text-rose-600'}`}>
+            {percentChange > 0 ? (
+              <ArrowUpIcon className="h-3 w-3 mr-1" />
+            ) : (
+              <ArrowDownIcon className="h-3 w-3 mr-1" />
+            )}
             {Math.abs(percentChange).toFixed(1)}%
           </span>
           <span className="text-xs text-gray-400 ml-1">from previous period</span>
         </div>
       )}
       
-      {/* Subtle decoration element */}
-      <motion.div 
-        className={`absolute -bottom-6 -right-6 w-24 h-24 rounded-full ${colors.iconBg} dark:opacity-25 z-0`}
-        animate={{ 
-          scale: [1, 1.05, 1],
-        }}
-        transition={{ 
-          duration: 5, 
-          repeat: Infinity,
-          repeatType: "reverse" 
-        }}
-      />
+      {/* Progress bar */}
+      <div className="mt-4">
+        <div className={`w-full h-1 ${colors.barBg} rounded-full overflow-hidden`}>
+          <motion.div 
+            className={`h-full ${colors.barFill}`}
+            initial={{ width: "0%" }}
+            animate={{ width: `${Math.min(Math.max(percentChange + 50, 10), 90)}%` }}
+            transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
+          />
+        </div>
+      </div>
     </motion.div>
   );
 };

@@ -78,15 +78,15 @@ const ConversionFunnel: React.FC = () => {
       transition={{ duration: 0.5, delay: 0.4 }}
     >
       <Card className={cn(
-        "h-full transition-all duration-500 enhanced-card",
+        "h-full transition-all duration-500 bg-white border-0 shadow-sm hover:shadow-md",
         isAnimating ? 'opacity-0' : 'opacity-100'
       )}>
-        <CardHeader>
-          <CardTitle className="text-lg font-poppins text-dashboard-blue">Conversion Funnel</CardTitle>
+        <CardHeader className="border-b pb-3">
+          <CardTitle className="text-lg font-semibold text-gray-800">Conversion Funnel</CardTitle>
         </CardHeader>
         
-        <CardContent>
-          <div className="h-[250px] flex items-center justify-center">
+        <CardContent className="pt-5">
+          <div className="h-[220px] flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -94,7 +94,7 @@ const ConversionFunnel: React.FC = () => {
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
-                  outerRadius={90}
+                  outerRadius={80}
                   paddingAngle={2}
                   dataKey="value"
                   onMouseEnter={onPieEnter}
@@ -110,7 +110,7 @@ const ConversionFunnel: React.FC = () => {
                       key={`cell-${index}`} 
                       fill={entry.color} 
                       stroke="white" 
-                      strokeWidth={1}
+                      strokeWidth={2}
                     />
                   ))}
                 </Pie>
@@ -119,18 +119,18 @@ const ConversionFunnel: React.FC = () => {
             </ResponsiveContainer>
           </div>
           
-          <div className="grid grid-cols-3 mt-6 gap-3">
-            <div className="bg-blue-50 p-3 rounded-xl hover:bg-blue-100 transition-colors duration-300 border border-blue-100">
-              <div className="text-xs text-gray-500">Answer Rate</div>
-              <div className="font-semibold text-dashboard-blue text-xl">{getConversionRate(1)}%</div>
+          <div className="grid grid-cols-3 mt-4 gap-2">
+            <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
+              <div className="text-xs font-medium text-gray-500">Answer Rate</div>
+              <div className="font-semibold text-blue-700 text-lg">{getConversionRate(1)}%</div>
             </div>
-            <div className="bg-blue-50 p-3 rounded-xl hover:bg-blue-100 transition-colors duration-300 border border-blue-100">
-              <div className="text-xs text-gray-500">Schedule Rate</div>
-              <div className="font-semibold text-dashboard-blue text-xl">{getConversionRate(3)}%</div>
+            <div className="bg-purple-50 p-3 rounded-lg border border-purple-100">
+              <div className="text-xs font-medium text-gray-500">Schedule Rate</div>
+              <div className="font-semibold text-purple-700 text-lg">{getConversionRate(3)}%</div>
             </div>
-            <div className="bg-blue-50 p-3 rounded-xl hover:bg-blue-100 transition-colors duration-300 border border-blue-100">
-              <div className="text-xs text-gray-500">Success Rate</div>
-              <div className="font-semibold text-dashboard-blue text-xl">{getConversionRate(4)}%</div>
+            <div className="bg-cyan-50 p-3 rounded-lg border border-cyan-100">
+              <div className="text-xs font-medium text-gray-500">Success Rate</div>
+              <div className="font-semibold text-cyan-700 text-lg">{getConversionRate(4)}%</div>
             </div>
           </div>
         </CardContent>

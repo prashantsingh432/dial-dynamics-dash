@@ -22,22 +22,22 @@ const TopPerformers: React.FC = () => {
       transition={{ duration: 0.5, delay: 0.6 }}
     >
       <Card className={cn(
-        "h-full transition-all duration-500 enhanced-card",
+        "h-full transition-all duration-500 bg-white border-0 shadow-sm hover:shadow-md",
         isAnimating ? 'opacity-0' : 'opacity-100'
       )}>
-        <CardHeader>
-          <CardTitle className="text-lg font-poppins text-dashboard-blue flex items-center">
-            <Award className="mr-2 h-5 w-5 text-dashboard-amber" />
+        <CardHeader className="border-b pb-3">
+          <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
+            <Award className="mr-2 h-5 w-5 text-amber-500" />
             Top Performers
           </CardTitle>
         </CardHeader>
         
-        <CardContent className="space-y-5">
+        <CardContent className="pt-5 space-y-5">
           {/* Star performer */}
           <AnimatePresence>
             {starPerformer && (
               <motion.div 
-                className="bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-xl p-5 relative overflow-hidden border border-blue-200"
+                className="bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg p-5 relative overflow-hidden border border-amber-200"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ 
@@ -48,13 +48,13 @@ const TopPerformers: React.FC = () => {
                 }}
               >
                 {/* Star badge */}
-                <div className="absolute top-0 right-0 bg-yellow-400 text-white py-1 px-3 flex items-center rounded-bl-lg shadow-md">
-                  <Star className="h-4 w-4 mr-1 text-white fill-yellow-400" />
+                <div className="absolute top-0 right-0 bg-yellow-500 text-white py-1 px-3 flex items-center rounded-bl-lg shadow-md">
+                  <Star className="h-4 w-4 mr-1 text-white" />
                   <span className="text-xs font-semibold">Star Performer</span>
                 </div>
                 
                 <div className="flex items-center">
-                  <div className="w-16 h-16 rounded-full overflow-hidden border-4 border-dashboard-blue shadow-inner">
+                  <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-amber-300 shadow-inner">
                     <img 
                       src={starPerformer.avatar} 
                       alt={starPerformer.name} 
@@ -63,26 +63,26 @@ const TopPerformers: React.FC = () => {
                   </div>
                   
                   <div className="ml-4">
-                    <h3 className="font-semibold text-lg">{starPerformer.name}</h3>
+                    <h3 className="font-semibold text-lg text-gray-800">{starPerformer.name}</h3>
                     <p className="text-sm text-gray-500 flex items-center">
                       {starPerformer.project}
-                      <TrendingUp className="ml-2 h-4 w-4 text-dashboard-green" />
+                      <TrendingUp className="ml-2 h-4 w-4 text-emerald-500" />
                     </p>
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-4 mt-4">
-                  <div className="bg-white rounded-lg p-2 shadow-sm">
+                <div className="grid grid-cols-3 gap-3 mt-4">
+                  <div className="bg-white rounded-lg p-2 shadow-sm border border-amber-100">
                     <p className="text-xs text-gray-500">Success Rate</p>
-                    <p className="font-semibold text-dashboard-blue text-lg">{starPerformer.successRate.toFixed(1)}%</p>
+                    <p className="font-semibold text-amber-700 text-lg">{starPerformer.successRate.toFixed(1)}%</p>
                   </div>
-                  <div className="bg-white rounded-lg p-2 shadow-sm">
+                  <div className="bg-white rounded-lg p-2 shadow-sm border border-amber-100">
                     <p className="text-xs text-gray-500">Meetings</p>
-                    <p className="font-semibold text-dashboard-blue text-lg">{starPerformer.meetings}</p>
+                    <p className="font-semibold text-amber-700 text-lg">{starPerformer.meetings}</p>
                   </div>
-                  <div className="bg-white rounded-lg p-2 shadow-sm">
+                  <div className="bg-white rounded-lg p-2 shadow-sm border border-amber-100">
                     <p className="text-xs text-gray-500">Dials</p>
-                    <p className="font-semibold text-dashboard-blue text-lg">{starPerformer.dials}</p>
+                    <p className="font-semibold text-amber-700 text-lg">{starPerformer.dials}</p>
                   </div>
                 </div>
               </motion.div>
@@ -90,23 +90,23 @@ const TopPerformers: React.FC = () => {
           </AnimatePresence>
           
           {/* Other top performers */}
-          <div className="space-y-3">
+          <div className="space-y-1">
             {regularPerformers.map((performer, index) => (
               <motion.div 
                 key={performer.id} 
                 className={cn(
-                  "flex items-center p-4 rounded-xl hover:bg-gray-50 transition-all",
+                  "flex items-center p-3 rounded-lg hover:bg-gray-50 transition-all",
                   "border border-transparent hover:border-gray-200"
                 )}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ 
                   duration: 0.3,
                   delay: 0.3 + (index * 0.1)
                 }}
-                whileHover={{ x: 5 }}
+                whileHover={{ x: 3, backgroundColor: "#F9FAFB" }}
               >
-                <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border-2 border-blue-200">
+                <div className="w-10 h-10 rounded-full overflow-hidden mr-3 border border-gray-200">
                   <img 
                     src={performer.avatar} 
                     alt={performer.name} 
@@ -115,12 +115,12 @@ const TopPerformers: React.FC = () => {
                 </div>
                 
                 <div className="flex-grow">
-                  <h4 className="font-medium">{performer.name}</h4>
+                  <h4 className="font-medium text-gray-800">{performer.name}</h4>
                   <p className="text-xs text-gray-500">{performer.project}</p>
                 </div>
                 
                 <div className="text-right">
-                  <p className="text-sm font-semibold text-dashboard-blue">{performer.successRate.toFixed(1)}%</p>
+                  <p className="text-sm font-semibold text-blue-600">{performer.successRate.toFixed(1)}%</p>
                   <p className="text-xs text-gray-500">{performer.meetings} meetings</p>
                 </div>
                 

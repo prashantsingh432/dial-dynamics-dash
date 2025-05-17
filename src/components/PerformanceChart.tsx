@@ -48,8 +48,8 @@ const PerformanceChart: React.FC = () => {
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="p-4 bg-white shadow-md rounded-lg border border-gray-100">
-          <p className="font-medium text-gray-600 mb-2">{label}</p>
+        <div className="bg-white p-4 shadow-lg rounded-lg border border-gray-200">
+          <p className="font-medium text-gray-700 mb-2">{label}</p>
           <div className="space-y-1">
             {payload.map((entry: any, index: number) => (
               <div key={`tooltip-${index}`} className="flex items-center">
@@ -80,13 +80,13 @@ const PerformanceChart: React.FC = () => {
       transition={{ duration: 0.5, delay: 0.3 }}
     >
       <Card className={cn(
-        "h-full transition-all duration-500 enhanced-card",
+        "h-full transition-all duration-500 bg-white border-0 shadow-sm hover:shadow-md",
         isAnimating ? 'opacity-0' : 'opacity-100'
       )}>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-lg font-poppins text-dashboard-blue">Performance Comparison</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between border-b pb-3">
+          <CardTitle className="text-lg font-semibold text-gray-800">Performance Comparison</CardTitle>
           
-          <div className="flex space-x-1 bg-gray-100 rounded-xl p-1">
+          <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
             {timeFrameOptions.map((option) => (
               <Button
                 key={option}
@@ -94,9 +94,9 @@ const PerformanceChart: React.FC = () => {
                 size="sm"
                 onClick={() => setChartTimeFrame(option)}
                 className={cn(
-                  "text-xs px-3 py-1 h-7 transition-all duration-300 rounded-lg",
+                  "text-xs px-3 py-1 h-7 transition-all duration-200 rounded-md",
                   chartTimeFrame === option
-                    ? "bg-white shadow-sm text-dashboard-blue"
+                    ? "bg-white shadow-sm text-gray-800"
                     : "hover:bg-gray-200 text-gray-600"
                 )}
               >
@@ -106,7 +106,7 @@ const PerformanceChart: React.FC = () => {
           </div>
         </CardHeader>
         
-        <CardContent className="pt-2">
+        <CardContent className="pt-5">
           <AnimatePresence mode="wait">
             <motion.div 
               key={chartTimeFrame}
@@ -119,10 +119,10 @@ const PerformanceChart: React.FC = () => {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartData}
-                  margin={{ top: 10, right: 30, left: 10, bottom: 5 }}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   barCategoryGap="20%"
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F1F1F1" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
                   <XAxis 
                     dataKey="name" 
                     axisLine={false}
@@ -138,49 +138,49 @@ const PerformanceChart: React.FC = () => {
                   />
                   <Tooltip 
                     content={<CustomTooltip />}
-                    cursor={{ fill: 'rgba(236, 242, 255, 0.4)' }}
+                    cursor={{ fill: 'rgba(249, 250, 251, 0.8)' }}
                   />
                   <Legend 
-                    verticalAlign="top" 
-                    height={40} 
+                    verticalAlign="top"
+                    height={36}
                     iconType="circle"
                     iconSize={8}
-                    wrapperStyle={{ paddingTop: '10px' }}
+                    wrapperStyle={{ paddingTop: '0px' }}
                   />
                   <ReferenceLine 
                     y={avgScheduled} 
-                    stroke="#3B82F6" 
+                    stroke="#7C3AED" 
                     strokeDasharray="3 3"
                     strokeWidth={1}
                     label={{ 
                       value: 'Avg Scheduled', 
-                      position: 'insideTopRight',
-                      fill: '#3B82F6',
-                      fontSize: 10
+                      position: 'right',
+                      fill: '#7C3AED',
+                      fontSize: 11
                     }}
                   />
                   <ReferenceLine 
                     y={avgSuccessful} 
-                    stroke="#10B981" 
+                    stroke="#14B8A6" 
                     strokeDasharray="3 3"
                     strokeWidth={1}
                     label={{ 
                       value: 'Avg Successful', 
-                      position: 'insideBottomRight',
-                      fill: '#10B981',
-                      fontSize: 10
+                      position: 'right',
+                      fill: '#14B8A6',
+                      fontSize: 11
                     }}
                   />
                   <Bar 
                     dataKey="Scheduled" 
-                    fill="#3B82F6" 
+                    fill="#7C3AED" 
                     radius={[4, 4, 0, 0]}
                     animationDuration={1000}
                     animationEasing="ease-out"
                   />
                   <Bar 
                     dataKey="Successful" 
-                    fill="#10B981" 
+                    fill="#14B8A6" 
                     radius={[4, 4, 0, 0]}
                     animationDuration={1000}
                     animationEasing="ease-out"

@@ -26,7 +26,7 @@ const Sidebar: React.FC = () => {
   return (
     <motion.div
       className={cn(
-        "h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out",
+        "h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out shadow-sm z-10",
       )}
       variants={sidebarVariants}
       initial={sidebarCollapsed ? "collapsed" : "expanded"}
@@ -39,15 +39,18 @@ const Sidebar: React.FC = () => {
         sidebarCollapsed ? "justify-center" : "justify-between"
       )}>
         {!sidebarCollapsed && (
-          <motion.h2 
+          <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="font-semibold text-lg text-dashboard-blue font-poppins"
+            className="flex items-center"
           >
-            OutboundDash
-          </motion.h2>
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold text-sm mr-2">
+              OD
+            </div>
+            <h2 className="font-semibold text-gray-800 font-poppins">OutboundDash</h2>
+          </motion.div>
         )}
         
         <button
@@ -70,16 +73,16 @@ const Sidebar: React.FC = () => {
               <button 
                 onClick={() => setActiveSection(item.id)}
                 className={cn(
-                  "w-full flex items-center rounded-lg transition-all duration-200 py-2",
+                  "w-full flex items-center rounded-lg transition-all duration-200 py-2.5",
                   activeSection === item.id 
-                    ? "bg-blue-50 text-dashboard-blue font-medium" 
+                    ? "bg-blue-50 text-blue-700 font-medium" 
                     : "text-gray-600 hover:bg-gray-100",
                   sidebarCollapsed ? "justify-center px-2" : "px-3"
                 )}
               >
                 <item.icon className={cn(
                   "h-5 w-5",
-                  activeSection === item.id ? "text-dashboard-blue" : "text-gray-500"
+                  activeSection === item.id ? "text-blue-600" : "text-gray-500"
                 )} />
                 
                 {!sidebarCollapsed && (
@@ -87,7 +90,7 @@ const Sidebar: React.FC = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.2, delay: 0.1 }}
-                    className="ml-3"
+                    className="ml-3 text-sm"
                   >
                     {item.label}
                   </motion.span>
@@ -113,16 +116,16 @@ const Sidebar: React.FC = () => {
       )}>
         {!sidebarCollapsed ? (
           <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-dashboard-blue flex items-center justify-center text-white">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white text-sm">
               RC
             </div>
             <div className="ml-2">
-              <div className="text-sm font-medium">Rajesh Choudhari</div>
+              <div className="text-sm font-medium text-gray-800">Rajesh Choudhari</div>
               <div className="text-xs text-gray-500">Sales Manager</div>
             </div>
           </div>
         ) : (
-          <div className="w-8 h-8 rounded-full bg-dashboard-blue flex items-center justify-center text-white">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center text-white text-sm">
             RC
           </div>
         )}

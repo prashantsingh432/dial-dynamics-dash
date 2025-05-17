@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
         
-        <main className="flex-1 overflow-auto p-4 md:p-6 pb-16">
+        <main className="flex-1 overflow-auto p-5 md:p-6 pb-16">
           <AnimatePresence mode="wait">
             {!dataAvailable ? (
               <motion.div
@@ -79,7 +79,7 @@ const Dashboard: React.FC = () => {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="space-y-6"
+                className="space-y-6 max-w-7xl mx-auto"
               >
                 {/* Dashboard title & info */}
                 <motion.div 
@@ -87,19 +87,16 @@ const Dashboard: React.FC = () => {
                   variants={itemVariants}
                 >
                   <h1 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-gray-100 font-poppins">
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-dashboard-blue to-dashboard-brightBlue">
-                      Dashboard
-                    </span>
+                    Dashboard Overview
                   </h1>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Overview for {filters.project === 'All' ? 'All Projects' : filters.project}
-                    {filters.agent ? ` - Agent: ${filters.agent}` : ''}
+                    Your outbound calls summary at a glance, with AI-driven insights and trends.
                   </p>
                 </motion.div>
                 
                 {/* KPIs */}
                 <motion.section 
-                  className="mb-6"
+                  className="mb-8"
                   variants={itemVariants}
                 >
                   <KPISection />
@@ -110,7 +107,7 @@ const Dashboard: React.FC = () => {
                     /* Agent Performance View */
                     <motion.section 
                       key="agent-view"
-                      className="mb-6"
+                      className="mb-8"
                       variants={itemVariants}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -127,10 +124,11 @@ const Dashboard: React.FC = () => {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.4 }}
+                      className="space-y-8"
                     >
                       {/* Charts */}
                       <motion.section 
-                        className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6"
+                        className="grid grid-cols-1 md:grid-cols-3 gap-6"
                         variants={itemVariants}
                       >
                         <div className="md:col-span-2">
@@ -143,7 +141,6 @@ const Dashboard: React.FC = () => {
                       
                       {/* Project Performance */}
                       <motion.section 
-                        className="mb-6"
                         variants={itemVariants}
                       >
                         <ProjectPerformance />

@@ -28,7 +28,7 @@ const KPISection: React.FC = () => {
   
   return (
     <motion.div 
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -37,7 +37,7 @@ const KPISection: React.FC = () => {
         title="Total Dials"
         value={kpis.totalDials.current}
         percentChange={kpis.totalDials.percentChange}
-        icon={<Phone className="w-5 h-5 text-white" strokeWidth={1.5} />}
+        icon={<Phone className="w-5 h-5" strokeWidth={1.5} />}
         color="purple"
         index={0}
       />
@@ -46,7 +46,7 @@ const KPISection: React.FC = () => {
         title="Total Connected"
         value={kpis.totalConnected.current}
         percentChange={kpis.totalConnected.percentChange}
-        icon={<Check className="w-5 h-5 text-white" strokeWidth={1.5} />}
+        icon={<Check className="w-5 h-5" strokeWidth={1.5} />}
         color="green"
         index={1}
       />
@@ -55,7 +55,7 @@ const KPISection: React.FC = () => {
         title="Total Talk Time"
         value={kpis.totalTalkTime.current}
         percentChange={kpis.totalTalkTime.percentChange}
-        icon={<Clock className="w-5 h-5 text-white" strokeWidth={1.5} />}
+        icon={<Clock className="w-5 h-5" strokeWidth={1.5} />}
         formatter={formatMinutes}
         color="amber"
         index={2}
@@ -65,7 +65,7 @@ const KPISection: React.FC = () => {
         title="Scheduled Meetings"
         value={kpis.scheduledMeetings.current}
         percentChange={kpis.scheduledMeetings.percentChange}
-        icon={<Calendar className="w-5 h-5 text-white" strokeWidth={1.5} />}
+        icon={<Calendar className="w-5 h-5" strokeWidth={1.5} />}
         color="rose"
         index={3}
       />
@@ -74,7 +74,7 @@ const KPISection: React.FC = () => {
         title="Successful Meetings"
         value={kpis.successfulMeetings.current}
         percentChange={kpis.successfulMeetings.percentChange}
-        icon={<CheckCheck className="w-5 h-5 text-white" strokeWidth={1.5} />}
+        icon={<CheckCheck className="w-5 h-5" strokeWidth={1.5} />}
         color="cyan"
         index={4}
       />

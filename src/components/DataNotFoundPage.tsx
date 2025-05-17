@@ -45,8 +45,8 @@ const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) 
       <motion.div
         initial={{ y: -20 }}
         animate={{ 
-          y: [0, -15, 0],
-          rotateZ: [0, -5, 0, 5, 0],
+          y: [0, -10, 0],
+          rotateZ: [0, -3, 0, 3, 0],
         }}
         transition={{
           duration: 4,
@@ -55,7 +55,7 @@ const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) 
         }}
         className="mb-8 text-blue-500 relative"
       >
-        <Calendar size={140} strokeWidth={1.5} className="drop-shadow-lg" />
+        <Calendar size={120} strokeWidth={1.5} className="drop-shadow-lg" />
         
         {/* Decorative elements */}
         <motion.div 
@@ -68,14 +68,14 @@ const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) 
       </motion.div>
       
       <motion.h1 
-        className="text-4xl font-bold mb-4 text-gray-800 font-poppins bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600"
+        className="text-3xl font-bold mb-4 text-gray-800 font-poppins"
         variants={itemVariants}
       >
         No Data Available
       </motion.h1>
       
       <motion.div 
-        className="flex items-center gap-2 mb-6 text-amber-600 bg-amber-50 px-5 py-3 rounded-xl shadow-sm border border-amber-100"
+        className="flex items-center gap-2 mb-6 text-amber-600 bg-amber-50 px-5 py-3 rounded-lg shadow-sm border border-amber-100"
         variants={itemVariants}
       >
         <AlertCircle className="h-5 w-5" />
@@ -96,9 +96,11 @@ const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) 
       >
         <Button 
           onClick={onGoBack} 
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all shadow-md hover:shadow-lg px-6 py-6 h-auto text-base group"
+          variant="default"
+          size="lg"
+          className="shadow-md hover:shadow-lg px-6 text-base flex items-center gap-2"
         >
-          <ArrowLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
+          <ArrowLeft className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
           Go Back to Dashboard
         </Button>
       </motion.div>
