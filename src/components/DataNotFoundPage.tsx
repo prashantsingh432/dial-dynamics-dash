@@ -53,13 +53,13 @@ const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) 
           repeat: Infinity,
           repeatType: "reverse",
         }}
-        className="mb-8 text-dashboard-blue relative"
+        className="mb-8 text-rose-500 relative"
       >
         <Calendar size={140} strokeWidth={1.5} className="drop-shadow-lg" />
         
         {/* Decorative elements */}
         <motion.div 
-          className="absolute -right-3 -top-3 w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-500"
+          className="absolute -right-3 -top-3 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-500"
           animate={{ scale: [1, 1.2, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
@@ -68,7 +68,7 @@ const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) 
       </motion.div>
       
       <motion.h1 
-        className="text-4xl font-bold mb-4 text-gray-800 font-poppins bg-clip-text text-transparent bg-gradient-to-r from-dashboard-blue to-dashboard-brightBlue"
+        className="text-4xl font-bold mb-4 text-gray-800 font-poppins bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-rose-500"
         variants={itemVariants}
       >
         No Data Available
@@ -96,7 +96,7 @@ const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) 
       >
         <Button 
           onClick={onGoBack} 
-          className="bg-gradient-to-r from-dashboard-blue to-dashboard-brightBlue hover:from-blue-700 hover:to-blue-600 transition-all shadow-md hover:shadow-lg px-6 py-6 h-auto text-base group"
+          className="bg-gradient-to-r from-purple-600 to-rose-500 hover:from-purple-700 hover:to-rose-600 transition-all shadow-md hover:shadow-lg px-6 py-6 h-auto text-base group"
         >
           <ArrowLeft className="mr-2 h-5 w-5 transition-transform group-hover:-translate-x-1" />
           Go Back to Dashboard
@@ -105,7 +105,7 @@ const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) 
       
       {/* Background decorations */}
       <motion.div 
-        className="absolute top-1/3 -right-10 w-32 h-32 rounded-full bg-blue-50 opacity-60 blur-3xl"
+        className="absolute top-1/3 -right-10 w-32 h-32 rounded-full bg-purple-50 opacity-60 blur-3xl"
         animate={{ 
           x: [0, 20, 0],
           y: [0, -20, 0],
@@ -117,7 +117,7 @@ const DataNotFoundPage: React.FC<DataNotFoundPageProps> = ({ month, onGoBack }) 
         }}
       />
       <motion.div 
-        className="absolute bottom-1/4 -left-10 w-40 h-40 rounded-full bg-amber-50 opacity-60 blur-3xl"
+        className="absolute bottom-1/4 -left-10 w-40 h-40 rounded-full bg-rose-50 opacity-60 blur-3xl"
         animate={{ 
           x: [0, -20, 0],
           y: [0, 20, 0],

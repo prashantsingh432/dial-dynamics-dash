@@ -36,7 +36,7 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Total Dials"
         value={kpis.totalDials.current}
-        icon={<Phone className="w-5 h-5" />}
+        icon={<Phone className="w-6 h-6 text-white" strokeWidth={1.5} />}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300'}
         index={0}
       />
@@ -44,7 +44,7 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Total Connected"
         value={kpis.totalConnected.current}
-        icon={<PhoneCall className="w-5 h-5" />}
+        icon={<PhoneCall className="w-6 h-6 text-white" strokeWidth={1.5} />}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-75'}
         index={1}
       />
@@ -52,7 +52,7 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Total Talk Time"
         value={kpis.totalTalkTime.current}
-        icon={<Clock className="w-5 h-5" />}
+        icon={<Clock className="w-6 h-6 text-white" strokeWidth={1.5} />}
         formatter={formatMinutes}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-150'}
         index={2}
@@ -61,7 +61,7 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Scheduled Meetings"
         value={kpis.scheduledMeetings.current}
-        icon={<Calendar className="w-5 h-5" />}
+        icon={<Calendar className="w-6 h-6 text-white" strokeWidth={1.5} />}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-225'}
         index={3}
       />
@@ -69,7 +69,7 @@ const KPISection: React.FC = () => {
       <KPICard
         title="Successful Meetings"
         value={kpis.successfulMeetings.current}
-        icon={<CalendarCheck className="w-5 h-5" />}
+        icon={<CalendarCheck className="w-6 h-6 text-white" strokeWidth={1.5} />}
         className={isAnimating ? 'opacity-0' : 'opacity-100 transition-opacity duration-300 delay-300'}
         index={4}
       />
