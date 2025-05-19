@@ -2,6 +2,7 @@
 import React, { useMemo } from 'react';
 import { useDashboard } from '@/context/DashboardContext';
 import { cn } from '@/lib/utils';
+import { Users } from 'lucide-react';
 
 interface AgentSelectorProps {
   className?: string;
@@ -13,7 +14,7 @@ const AgentSelector: React.FC<AgentSelectorProps> = ({ className }) => {
   // Filter agents by the selected project
   const filteredAgents = useMemo(() => {
     if (filters.project === 'All') {
-      return agentsList;
+      return [];
     }
     return agentsList.filter(agent => agent.project === filters.project);
   }, [agentsList, filters.project]);
@@ -27,6 +28,28 @@ const AgentSelector: React.FC<AgentSelectorProps> = ({ className }) => {
       setAgent(agentId);
     }
   };
+
+  // If "All" is selected, show a message instead of the agent list
+  if (filters.project === 'All') {
+    return (
+      <div className={cn("flex flex-col space-y-1", className)}>
+        <h3 className={cn("px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider",
+          sidebarCollapsed ? "sr-only" : "")}>
+          Agents
+        </h3>
+        <div className="px-3 py-4 flex flex-col items-center justify-center text-gray-500 text-sm">
+          {!sidebarCollapsed ? (
+            <>
+              <Users className="h-5 w-5 mb-2 opacity-50" />
+              <p className="text-center">Select a project to view its agents</p>
+            </>
+          ) : (
+            <Users className="h-5 w-5 opacity-50" />
+          )}
+        </div>
+      </div>
+    );
+  }
   
   // If sidebar is collapsed, we'll only show icons
   if (sidebarCollapsed) {
@@ -59,7 +82,7 @@ const AgentSelector: React.FC<AgentSelectorProps> = ({ className }) => {
       </h3>
       
       {filteredAgents.length === 0 ? (
-        <p className="px-3 py-2 text-sm text-gray-500 italic">No agents available</p>
+        <p className="px-3 py-2 text-sm text-gray-500 italic">No agents available for this project</p>
       ) : (
         <ul className="mt-1">
           {filteredAgents.map((agent) => (
