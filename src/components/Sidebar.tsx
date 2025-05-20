@@ -24,10 +24,18 @@ const Sidebar: React.FC = () => {
     label: 'Dashboard',
     icon: BarChart2
   }, {
-    id: 'agents',
-    label: 'Agents',
-    icon: Users
+    id: 'project-performance',
+    label: 'Project Performance',
+    icon: BarChart2
   }];
+
+  const handleMenuItemClick = (id) => {
+    setActiveSection(id);
+    if (id === 'project-performance') {
+      // Logic to show project performance
+      // This could involve setting a state or calling a function to load the project performance data
+    }
+  };
   return <motion.div className={cn("h-screen bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out shadow-sm z-10")} variants={sidebarVariants} initial={sidebarCollapsed ? "collapsed" : "expanded"} animate={sidebarCollapsed ? "collapsed" : "expanded"} transition={{
     type: 'spring',
     stiffness: 300,
@@ -59,28 +67,17 @@ const Sidebar: React.FC = () => {
       <div className="pt-5 px-2">
         <ul className="space-y-1">
           {menuItems.map(item => <li key={item.id}>
-              <button onClick={() => setActiveSection(item.id)} className={cn("w-full flex items-center rounded-lg transition-all duration-200 py-2.5", activeSection === item.id ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-600 hover:bg-gray-100", sidebarCollapsed ? "justify-center px-2" : "px-3")}>
+              <button onClick={() => handleMenuItemClick(item.id)} className={cn("w-full flex items-center rounded-lg transition-all duration-200 py-2.5", activeSection === item.id ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-600 hover:bg-gray-100", sidebarCollapsed ? "justify-center px-2" : "px-3")}>
                 <item.icon className={cn("h-5 w-5", activeSection === item.id ? "text-blue-600" : "text-gray-500")} />
-                
-                {!sidebarCollapsed && <motion.span initial={{
-              opacity: 0
-            }} animate={{
-              opacity: 1
-            }} transition={{
-              duration: 0.2,
-              delay: 0.1
-            }} className="ml-3 text-sm">
-                    {item.label}
-                  </motion.span>}
+                {!sidebarCollapsed && <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.2, delay: 0.1 }} className="ml-3 text-sm">{item.label}</motion.span>}
               </button>
             </li>)}
         </ul>
       </div>
       
-      {/* Sidebar Content - Projects & Agents with improved spacing */}
+      {/* Sidebar Content - Projects with improved spacing */}
       <div className="flex-grow overflow-auto py-6 px-2">
         <ProjectSelector className="mb-8" />
-        <AgentSelector />
       </div>
       
       {/* Sidebar Footer */}

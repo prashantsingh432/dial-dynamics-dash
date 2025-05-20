@@ -15,7 +15,7 @@ import DataNotFoundPage from './DataNotFoundPage';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Dashboard: React.FC = () => {
-  const { filters, loading, dataAvailable, resetMonth } = useDashboard();
+  const { filters, loading, dataAvailable, resetMonth, activeSection } = useDashboard();
   
   // Animation variants for staggered animations
   const containerVariants = {
@@ -103,7 +103,19 @@ const Dashboard: React.FC = () => {
                 </motion.section>
                 
                 <AnimatePresence mode="wait">
-                  {filters.agent ? (
+                  {activeSection === 'project-performance' ? (
+                    <motion.section
+                      key="project-performance"
+                      className="mb-8"
+                      variants={itemVariants}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <ProjectPerformance />
+                    </motion.section>
+                  ) : filters.agent ? (
                     /* Agent Performance View */
                     <motion.section 
                       key="agent-view"
@@ -137,13 +149,6 @@ const Dashboard: React.FC = () => {
                         <div className="md:col-span-1">
                           <ConversionFunnel />
                         </div>
-                      </motion.section>
-                      
-                      {/* Project Performance */}
-                      <motion.section 
-                        variants={itemVariants}
-                      >
-                        <ProjectPerformance />
                       </motion.section>
                       
                       {/* Top Performers */}
