@@ -37,10 +37,10 @@ const AgentSelector: React.FC<AgentSelectorProps> = ({ className }) => {
           sidebarCollapsed ? "sr-only" : "")}>
           Agents
         </h3>
-        <div className="px-3 py-4 flex flex-col items-center justify-center text-gray-500 text-sm">
+        <div className="px-3 py-6 flex flex-col items-center justify-center text-gray-500 text-sm h-32">
           {!sidebarCollapsed ? (
             <>
-              <Users className="h-5 w-5 mb-2 opacity-50" />
+              <Users className="h-5 w-5 mb-3 opacity-50" />
               <p className="text-center">Select a project to view its agents</p>
             </>
           ) : (
@@ -82,7 +82,7 @@ const AgentSelector: React.FC<AgentSelectorProps> = ({ className }) => {
       </h3>
       
       {filteredAgents.length === 0 ? (
-        <p className="px-3 py-2 text-sm text-gray-500 italic">No agents available for this project</p>
+        <p className="px-3 py-6 text-sm text-gray-500 italic text-center">No agents available for this project</p>
       ) : (
         <ul className="mt-1">
           {filteredAgents.map((agent) => (

@@ -4,17 +4,11 @@ import { useDashboard } from '@/context/DashboardContext';
 import KPICard from './KPICard';
 import { Phone, Check, Clock, Calendar, CheckCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { formatMinutes } from '@/lib/formatters';
 
 const KPISection: React.FC = () => {
   const { data, isAnimating } = useDashboard();
   const { kpis } = data;
-  
-  // Format for minutes
-  const formatMinutes = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
-  };
   
   const containerVariants = {
     hidden: { opacity: 0 },

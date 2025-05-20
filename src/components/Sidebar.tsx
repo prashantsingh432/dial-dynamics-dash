@@ -101,12 +101,10 @@ const Sidebar: React.FC = () => {
         </ul>
       </div>
       
-      {/* Sidebar Content */}
+      {/* Sidebar Content - Projects & Agents with improved spacing */}
       <div className="flex-grow overflow-auto py-6 px-2">
-        <ProjectSelector />
-        <div className="mt-8">
-          <AgentSelector />
-        </div>
+        <ProjectSelector className="mb-8" />
+        <AgentSelector />
       </div>
       
       {/* Sidebar Footer */}

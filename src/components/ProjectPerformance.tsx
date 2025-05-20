@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useDashboard } from '@/context/DashboardContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +8,7 @@ import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import { formatMinutes } from '@/lib/formatters';
 
 type SortField = 'dials' | 'connected' | 'talkTime' | 'scheduledMeetings' | 'successfulMeetings' | 'successRate';
 type SortDirection = 'asc' | 'desc';
@@ -44,13 +44,6 @@ const ProjectPerformance: React.FC = () => {
     return (a[sortField] - b[sortField]) * multiplier;
   });
   
-  // Format for minutes
-  const formatMinutes = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
-  };
-
   // Animation variants for table rows
   const tableRowVariants = {
     hidden: { opacity: 0 },
