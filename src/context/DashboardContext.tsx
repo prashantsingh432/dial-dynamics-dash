@@ -252,22 +252,19 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
       // Calculate aggregated metrics
       const totalDials = agentDailyData.reduce((sum, day) => sum + (day.total_dials || 0), 0);
       const totalConnected = agentDailyData.reduce((sum, day) => sum + (day.total_connects || 0), 0);
-      const totalTalkTimeSeconds = agentDailyData.reduce((sum, day) => {
+      const totalTalkTimeMinutes = agentDailyData.reduce((sum, day) => {
         if (!day.total_talktime) return sum;
-        
-        // Fix the type issue by ensuring total_talktime is a string before using split
         const talkTimeString = String(day.total_talktime);
         const parts = talkTimeString.split(':');
         if (parts.length !== 3) return sum;
-        
         const hours = parseInt(parts[0]) || 0;
         const minutes = parseInt(parts[1]) || 0;
         const seconds = parseInt(parts[2]) || 0;
-        
-        return sum + (hours * 3600 + minutes * 60 + seconds);
+        return sum + (hours * 60 + minutes + seconds / 60);
       }, 0);
       
-      const talkTimeMinutes = Math.round(totalTalkTimeSeconds / 60);
+      const talkTimeHours = Math.floor(totalTalkTimeMinutes / 60);
+      const talkTimeMinutes = totalTalkTimeMinutes % 60;
       const scheduledMeetings = agentDailyData.reduce((sum, day) => sum + (day.meetings_scheduled || 0), 0);
       const successfulMeetings = agentDailyData.reduce((sum, day) => sum + (day.meetings_successful || 0), 0);
       

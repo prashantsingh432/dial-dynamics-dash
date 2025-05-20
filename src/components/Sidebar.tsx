@@ -18,10 +18,8 @@ const Sidebar: React.FC = () => {
   
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart2 },
-    { id: 'agents', label: 'Agents', icon: Users },
-    { id: 'settings', label: 'Settings', icon: Settings },
-    { id: 'help', label: 'Help', icon: HelpCircle }
-  ];
+    { id: 'agents', label: 'Agents', icon: Users }
+];
   
   return (
     <motion.div
