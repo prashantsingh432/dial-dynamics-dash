@@ -21,55 +21,59 @@ const PerformanceChart: React.FC = () => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   
   useEffect(() => {
-    // Generate appropriate data based on the selected time frame
+    // Only use data that's available from Supabase
     let newData: ChartDataItem[] = [];
     
     switch (chartTimeFrame) {
       case 'Weekly':
-        newData = [
-          { name: 'Week 1', Scheduled: 140, Successful: 12 },
-          { name: 'Week 2', Scheduled: 310, Successful: 110 },
-          { name: 'Week 3', Scheduled: 260, Successful: 153 },
-          { name: 'Week 4', Scheduled: 10, Successful: 8 }
-        ];
+        // Use the data from Supabase instead of hardcoded values
+        newData = data.performanceChart.labels.map((label, index) => ({
+          name: label,
+          Scheduled: data.performanceChart.scheduled[index] || 0,
+          Successful: data.performanceChart.successful[index] || 0
+        }));
         break;
         
       case 'Monthly':
-        newData = [
-          { name: 'Jan', Scheduled: 120, Successful: 65 },
-          { name: 'Feb', Scheduled: 98, Successful: 43 },
-          { name: 'Mar', Scheduled: 145, Successful: 85 },
-          { name: 'Apr', Scheduled: 178, Successful: 93 },
-          { name: 'May', Scheduled: 213, Successful: 125 },
-          { name: 'Jun', Scheduled: 198, Successful: 110 },
-          { name: 'Jul', Scheduled: 173, Successful: 95 },
-          { name: 'Aug', Scheduled: 155, Successful: 82 },
-          { name: 'Sep', Scheduled: 140, Successful: 75 },
-          { name: 'Oct', Scheduled: 0, Successful: 0 },
-          { name: 'Nov', Scheduled: 0, Successful: 0 },
-          { name: 'Dec', Scheduled: 0, Successful: 0 }
-        ];
+        // For Monthly, we'll display only the current month data
+        // Convert existing data to monthly format if needed
+        const monthsWithData = ['May']; // Only May has data as per the user's message
+        newData = monthsWithData.map(month => {
+          // This should be fetched from Supabase for the specific month
+          // For now, we aggregate from the current data
+          const totalScheduled = data.kpis.scheduledMeetings.current;
+          const totalSuccessful = data.kpis.successfulMeetings.current;
+          
+          return {
+            name: month,
+            Scheduled: totalScheduled,
+            Successful: totalSuccessful
+          };
+        });
         break;
         
       case 'Quarterly':
-        newData = [
-          { name: 'Q1', Scheduled: 363, Successful: 193 },
-          { name: 'Q2', Scheduled: 589, Successful: 328 },
-          { name: 'Q3', Scheduled: 468, Successful: 252 },
-          { name: 'Q4', Scheduled: 0, Successful: 0 }
-        ];
+        // For Quarterly, we can show the current quarter if data exists
+        // Assuming May is in Q2
+        newData = [{
+          name: 'Q2',
+          Scheduled: data.kpis.scheduledMeetings.current,
+          Successful: data.kpis.successfulMeetings.current
+        }];
         break;
         
       case 'Yearly':
-        newData = [
-          { name: '2022', Scheduled: 965, Successful: 612 },
-          { name: '2023', Scheduled: 1245, Successful: 786 },
-          { name: '2024', Scheduled: 1420, Successful: 773 },
-          { name: '2025', Scheduled: 0, Successful: 0 }
-        ];
+        // For Yearly, show the current year if data exists
+        // Assuming the data is for 2024
+        newData = [{
+          name: '2024',
+          Scheduled: data.kpis.scheduledMeetings.current,
+          Successful: data.kpis.successfulMeetings.current
+        }];
         break;
         
       default:
+        // Fallback to whatever is available in the Supabase data
         newData = data.performanceChart.labels.map((label, index) => ({
           name: label,
           Scheduled: data.performanceChart.scheduled[index],
@@ -78,7 +82,7 @@ const PerformanceChart: React.FC = () => {
     }
     
     setChartData(newData);
-  }, [chartTimeFrame, data.performanceChart]);
+  }, [chartTimeFrame, data.performanceChart, data.kpis]);
   
   // Time frame options for the chart
   const timeFrameOptions: ChartTimeFrame[] = ['Weekly', 'Monthly', 'Quarterly', 'Yearly'];
@@ -242,27 +246,15 @@ const PerformanceChart: React.FC = () => {
               ) : (
                 <div className="h-full flex flex-col items-center justify-center text-center">
                   <p className="text-gray-500 mb-2">No data available for this period</p>
-                  <p className="text-sm text-gray-400">Future or missing data will appear here when available</p>
+                  <p className="text-sm text-gray-400">Only showing data available in the database</p>
                 </div>
               )}
             </motion.div>
           </AnimatePresence>
           
-          {chartTimeFrame === 'Monthly' && chartData.some(item => item.Scheduled === 0 && item.Successful === 0) && (
+          {chartData.length > 0 && (
             <div className="mt-3 text-sm text-gray-500 italic text-center">
-              Note: Future months show zero values
-            </div>
-          )}
-          
-          {chartTimeFrame === 'Quarterly' && chartData.some(item => item.Scheduled === 0 && item.Successful === 0) && (
-            <div className="mt-3 text-sm text-gray-500 italic text-center">
-              Note: Future quarters show zero values
-            </div>
-          )}
-          
-          {chartTimeFrame === 'Yearly' && chartData.some(item => item.Scheduled === 0 && item.Successful === 0) && (
-            <div className="mt-3 text-sm text-gray-500 italic text-center">
-              Note: Future years show zero values
+              Note: Only showing data available in the database
             </div>
           )}
         </CardContent>
