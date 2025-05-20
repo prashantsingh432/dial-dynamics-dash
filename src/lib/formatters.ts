@@ -5,9 +5,12 @@
  * @returns Formatted string in the format "Xh Y.Zm"
  */
 export const formatMinutes = (minutes: number): string => {
+  if (!minutes && minutes !== 0) return "0h 0.0m";
+  
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
   // Round to 1 decimal place
   const roundedMins = Math.round(mins * 10) / 10;
+  
   return `${hours}h ${roundedMins}m`;
 };

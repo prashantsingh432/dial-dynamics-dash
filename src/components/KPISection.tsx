@@ -50,7 +50,7 @@ const KPISection: React.FC = () => {
         value={kpis.totalTalkTime.current}
         percentChange={kpis.totalTalkTime.percentChange}
         icon={<Clock className="w-5 h-5" strokeWidth={1.5} />}
-        formatter={formatMinutes}
+        formatter={(value) => formatMinutes(value)}
         color="amber"
         index={2}
       />

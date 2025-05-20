@@ -4,6 +4,7 @@ import { useDashboard } from '@/context/DashboardContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Phone, PhoneCall, Clock, Calendar, CalendarCheck } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { formatMinutes } from '@/lib/formatters';
 
 const AgentPerformance: React.FC = () => {
   const { data, filters } = useDashboard();
@@ -24,13 +25,6 @@ const AgentPerformance: React.FC = () => {
     scheduledMeetings: 0,
     successfulMeetings: 0,
     dailyStats: []
-  };
-  
-  // Format for minutes
-  const formatMinutes = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
   };
   
   return (
