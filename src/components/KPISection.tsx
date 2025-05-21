@@ -7,8 +7,8 @@ import { motion } from 'framer-motion';
 import { formatMinutes } from '@/lib/formatters';
 
 const KPISection: React.FC = () => {
-  const { data, isAnimating } = useDashboard();
-  const { kpis } = data;
+  const { filteredData, isAnimating, filters } = useDashboard();
+  const { kpis } = filteredData;
   
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -26,6 +26,7 @@ const KPISection: React.FC = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
+      key={`kpi-section-${filters.project}`} // Re-animate when project changes
     >
       <KPICard
         title="Total Dials"

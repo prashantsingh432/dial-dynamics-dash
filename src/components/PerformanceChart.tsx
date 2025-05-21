@@ -16,7 +16,7 @@ interface ChartDataItem {
 }
 
 const PerformanceChart: React.FC = () => {
-  const { data, isAnimating } = useDashboard();
+  const { filteredData, isAnimating, filters } = useDashboard();
   const [chartTimeFrame, setChartTimeFrame] = useState<ChartTimeFrame>('Monthly');
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   
@@ -27,10 +27,10 @@ const PerformanceChart: React.FC = () => {
     switch (chartTimeFrame) {
       case 'Weekly':
         // Use the data from Supabase instead of hardcoded values
-        newData = data.performanceChart.labels.map((label, index) => ({
+        newData = filteredData.performanceChart.labels.map((label, index) => ({
           name: label,
-          Scheduled: data.performanceChart.scheduled[index] || 0,
-          Successful: data.performanceChart.successful[index] || 0
+          Scheduled: filteredData.performanceChart.scheduled[index] || 0,
+          Successful: filteredData.performanceChart.successful[index] || 0
         }));
         break;
         
@@ -41,8 +41,13 @@ const PerformanceChart: React.FC = () => {
         newData = monthsWithData.map(month => {
           // This should be fetched from Supabase for the specific month
           // For now, we aggregate from the current data
-          const totalScheduled = data.kpis.scheduledMeetings.current;
-          const totalSuccessful = data.kpis.successfulMeetings.current;
+          const totalScheduled = filters.project === 'All' 
+            ? filteredData.kpis.scheduledMeetings.current 
+            : filteredData.projectPerformance.find(p => p.name === filters.project)?.scheduledMeetings || 0;
+          
+          const totalSuccessful = filters.project === 'All'
+            ? filteredData.kpis.successfulMeetings.current
+            : filteredData.projectPerformance.find(p => p.name === filters.project)?.successfulMeetings || 0;
           
           return {
             name: month,
@@ -55,34 +60,50 @@ const PerformanceChart: React.FC = () => {
       case 'Quarterly':
         // For Quarterly, we can show the current quarter if data exists
         // Assuming May is in Q2
+        const scheduledQ2 = filters.project === 'All'
+          ? filteredData.kpis.scheduledMeetings.current
+          : filteredData.projectPerformance.find(p => p.name === filters.project)?.scheduledMeetings || 0;
+        
+        const successfulQ2 = filters.project === 'All'
+          ? filteredData.kpis.successfulMeetings.current
+          : filteredData.projectPerformance.find(p => p.name === filters.project)?.successfulMeetings || 0;
+        
         newData = [{
           name: 'Q2',
-          Scheduled: data.kpis.scheduledMeetings.current,
-          Successful: data.kpis.successfulMeetings.current
+          Scheduled: scheduledQ2,
+          Successful: successfulQ2
         }];
         break;
         
       case 'Yearly':
         // For Yearly, show the current year if data exists
         // Assuming the data is for 2024
+        const scheduledYear = filters.project === 'All'
+          ? filteredData.kpis.scheduledMeetings.current
+          : filteredData.projectPerformance.find(p => p.name === filters.project)?.scheduledMeetings || 0;
+        
+        const successfulYear = filters.project === 'All'
+          ? filteredData.kpis.successfulMeetings.current
+          : filteredData.projectPerformance.find(p => p.name === filters.project)?.successfulMeetings || 0;
+        
         newData = [{
-          name: '2024',
-          Scheduled: data.kpis.scheduledMeetings.current,
-          Successful: data.kpis.successfulMeetings.current
+          name: '2025',
+          Scheduled: scheduledYear,
+          Successful: successfulYear
         }];
         break;
         
       default:
         // Fallback to whatever is available in the Supabase data
-        newData = data.performanceChart.labels.map((label, index) => ({
+        newData = filteredData.performanceChart.labels.map((label, index) => ({
           name: label,
-          Scheduled: data.performanceChart.scheduled[index],
-          Successful: data.performanceChart.successful[index]
+          Scheduled: filteredData.performanceChart.scheduled[index],
+          Successful: filteredData.performanceChart.successful[index]
         }));
     }
     
     setChartData(newData);
-  }, [chartTimeFrame, data.performanceChart, data.kpis]);
+  }, [chartTimeFrame, filteredData, filters.project]);
   
   // Time frame options for the chart
   const timeFrameOptions: ChartTimeFrame[] = ['Weekly', 'Monthly', 'Quarterly', 'Yearly'];
@@ -128,13 +149,17 @@ const PerformanceChart: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.3 }}
+      key={`performance-chart-${filters.project}`} // Re-animate when project changes
     >
       <Card className={cn(
         "h-full transition-all duration-500 bg-white border-0 shadow-sm hover:shadow-md",
         isAnimating ? 'opacity-0' : 'opacity-100'
       )}>
         <CardHeader className="flex flex-row items-center justify-between border-b pb-3">
-          <CardTitle className="text-lg font-semibold text-gray-800">Performance Comparison</CardTitle>
+          <CardTitle className="text-lg font-semibold text-gray-800">
+            Performance Comparison
+            {filters.project !== 'All' ? ` (${filters.project})` : ''}
+          </CardTitle>
           
           <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
             {timeFrameOptions.map((option) => (
@@ -159,7 +184,7 @@ const PerformanceChart: React.FC = () => {
         <CardContent className="pt-5">
           <AnimatePresence mode="wait">
             <motion.div 
-              key={chartTimeFrame}
+              key={`${chartTimeFrame}-${filters.project}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

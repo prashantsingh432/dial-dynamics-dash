@@ -74,7 +74,7 @@ const Dashboard: React.FC = () => {
               </motion.div>
             ) : (
               <motion.div
-                key="dashboard-content"
+                key={`dashboard-content-${filters.project}-${filters.agent}`} // Re-animate when filters change
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
@@ -88,6 +88,8 @@ const Dashboard: React.FC = () => {
                 >
                   <h1 className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-gray-100 font-poppins">
                     Dashboard Overview
+                    {filters.project !== 'All' && ` - ${filters.project}`}
+                    {filters.agent && ` - ${filters.agent}`}
                   </h1>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Your outbound calls summary at a glance, with AI-driven insights and trends.

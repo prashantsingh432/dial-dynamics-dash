@@ -1,8 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 // Define types for our dashboard data
-export type Project = 'SIS NAG' | 'SS' | 'AngerBox' | 'LivingDSS' | 'Siri' | 'RatherUnique' | 'Sprockets' | 'All';
+export type Project = 'SIS NAG' | 'DTSS' | 'AngerBox' | 'LivingDSS' | 'Siri' | 'RatherUnique' | 'Sprockets' | 'All';
 export type TimeFrame = 'Daily' | 'Weekly' | 'Monthly';
 export type Agent = string | null;
 
@@ -89,6 +90,7 @@ export interface DashboardFilters {
 
 export interface DashboardContextType {
   data: DashboardData;
+  filteredData: DashboardData;  // New field for project-filtered data
   filters: DashboardFilters;
   loading: boolean;
   dataAvailable: boolean;
@@ -134,6 +136,66 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [agentsList, setAgentsList] = useState<{ id: string; name: string; project: string }[]>([]);
   const [activeSection, setActiveSection] = useState<string>('dashboard');
+  
+  // Filter data based on selected project
+  const filteredData = useMemo(() => {
+    if (filters.project === 'All') {
+      return data;
+    }
+    
+    // Find the selected project's performance data
+    const selectedProject = data.projectPerformance.find(
+      project => project.name === filters.project
+    );
+    
+    if (!selectedProject) {
+      return data;
+    }
+    
+    // Filter top performers from the selected project
+    const projectTopPerformers = data.topPerformers.filter(
+      performer => performer.project === filters.project
+    );
+    
+    // Create project-specific KPIs
+    const projectKPIs: KPIData = {
+      totalDials: {
+        current: selectedProject.dials,
+        previous: 0, // We don't have previous period data for individual projects
+        percentChange: 0, // Placeholder - would need to calculate this properly
+      },
+      totalConnected: {
+        current: selectedProject.connected,
+        previous: 0,
+        percentChange: 0,
+      },
+      totalTalkTime: {
+        current: selectedProject.talkTime,
+        previous: 0,
+        percentChange: 0,
+      },
+      scheduledMeetings: {
+        current: selectedProject.scheduledMeetings,
+        previous: 0,
+        percentChange: 0,
+      },
+      successfulMeetings: {
+        current: selectedProject.successfulMeetings,
+        previous: 0,
+        percentChange: 0,
+      },
+    };
+    
+    // For the charts, ideally we'd have project-specific chart data
+    // For now, just use the overall chart data as a placeholder
+    
+    return {
+      ...data,
+      kpis: projectKPIs,
+      topPerformers: projectTopPerformers,
+      projectPerformance: [selectedProject],
+    };
+  }, [data, filters.project]);
   
   // Fetch agents list from Supabase
   useEffect(() => {
@@ -478,6 +540,7 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
     <DashboardContext.Provider
       value={{
         data,
+        filteredData,
         filters,
         loading,
         dataAvailable,
