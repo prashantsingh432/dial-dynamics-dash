@@ -5,7 +5,7 @@ import { useDashboard } from '@/context/DashboardContext';
 import ProjectSelector from './ProjectSelector';
 import AgentSelector from './AgentSelector';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, LayoutDashboard, BarChartBig, PlusCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, LayoutDashboard, BarChartBig } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Sidebar: React.FC = () => {
@@ -13,8 +13,7 @@ const Sidebar: React.FC = () => {
     sidebarCollapsed, 
     toggleSidebar, 
     activeSection, 
-    setActiveSection,
-    filters 
+    setActiveSection 
   } = useDashboard();
   
   return (
@@ -93,31 +92,17 @@ const Sidebar: React.FC = () => {
               {!sidebarCollapsed && <span className="ml-3">Project Performance</span>}
             </button>
           </li>
-          <li>
-            <button 
-              className={cn(
-                "flex items-center w-full px-3 py-2 text-sm rounded-md",
-                activeSection === 'data-entry' 
-                  ? "bg-blue-50 text-dashboard-blue font-medium" 
-                  : "text-gray-700 hover:bg-gray-100",
-                sidebarCollapsed && "justify-center px-2"
-              )}
-              onClick={() => setActiveSection('data-entry')}
-            >
-              <PlusCircle className="h-5 w-5" />
-              {!sidebarCollapsed && <span className="ml-3">Data Entry</span>}
-            </button>
-          </li>
         </ul>
       </div>
       
       {/* Sidebar Content - Projects and Agents section */}
       <div className="flex-grow overflow-auto py-6 px-2">
-        {!sidebarCollapsed && (
-          <div className="text-xs font-semibold text-gray-500 uppercase mb-2 px-3">
-            PROJECTS
-          </div>
-        )}
+        <div className={cn(
+          "text-xs font-semibold text-gray-500 uppercase mb-2 px-3",
+          sidebarCollapsed && "sr-only"
+        )}>
+          PROJECTS
+        </div>
         <ProjectSelector className="mb-6" />
         
         {/* Only show Agents section if a project other than "All" is selected */}
