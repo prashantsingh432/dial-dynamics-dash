@@ -196,7 +196,18 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      upsert_daily_performance: {
+        Args: {
+          p_agent_id: string
+          p_date: string
+          p_total_dials: number
+          p_total_connects: number
+          p_meetings_scheduled: number
+          p_meetings_successful: number
+          p_project_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
