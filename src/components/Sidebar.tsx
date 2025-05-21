@@ -124,7 +124,7 @@ const Sidebar: React.FC = () => {
         </ul>
       </div>
       
-      {/* Sidebar Content - Projects with improved spacing */}
+      {/* Sidebar Content - Projects and Agents section */}
       <div className="flex-grow overflow-auto py-6 px-2">
         <div className={cn(
           "text-xs font-semibold text-gray-500 uppercase mb-2 px-3",
@@ -132,7 +132,10 @@ const Sidebar: React.FC = () => {
         )}>
           PROJECTS
         </div>
-        <ProjectSelector className="mb-8" />
+        <ProjectSelector className="mb-6" />
+        
+        {/* Only show Agents section if a project other than "All" is selected */}
+        <AgentSelector className="mb-2" />
       </div>
       
       {/* Sidebar Footer */}
