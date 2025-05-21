@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -102,6 +101,8 @@ export interface DashboardContextType {
   agentsList: { id: string; name: string; project: string }[];
   sidebarCollapsed: boolean;
   toggleSidebar: () => void;
+  activeSection: string;
+  setActiveSection: (section: string) => void;
 }
 
 // Provider component
@@ -132,6 +133,7 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
   const [isAnimating, setIsAnimating] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [agentsList, setAgentsList] = useState<{ id: string; name: string; project: string }[]>([]);
+  const [activeSection, setActiveSection] = useState<string>('dashboard');
   
   // Fetch agents list from Supabase
   useEffect(() => {
@@ -488,6 +490,8 @@ export const DashboardProvider: React.FC<{ children: ReactNode }> = ({ children 
         agentsList,
         sidebarCollapsed,
         toggleSidebar,
+        activeSection,
+        setActiveSection,
       }}
     >
       {children}
